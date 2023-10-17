@@ -11,7 +11,7 @@ Welcome to the repository for CS 401 Communications Group 7! This project focuse
   2.[SRS Document](https://github.com/kwebb31/CS401Group7/blob/fa84e197204f65027ec9ba2dbd28736fb64a25c2/Group%207%20SRS%20Document.pdf)
 
   
-  3.[ Gantt Chart]([https://github.com/kwebb31/CS401Group7/blob/fa84e197204f65027ec9ba2dbd28736fb64a25c2/Gantt%20chart%20Group%207.pdf](https://github.com/kwebb31/CS401Group7/blob/main/Gantt%20chart%20Group%207.pdf))
+  3.[ Gantt Chart](https://github.com/kwebb31/CS401Group7/blob/main/GanttChart%20Group%207.pdf)
 
   
   4.[Meeting Minutes Document](https://github.com/kwebb31/CS401Group7/blob/main/Meeting%20Minutes%20Group%207_%20Communcations.pdf)
