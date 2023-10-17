@@ -6,7 +6,7 @@ Welcome to the repository for CS 401 Communications Group 7! This project focuse
 
 <ins>**Table of Contents**</ins>
 
-   1.[Project Overview](https://github.com/kwebb31/CS401Group7/new/main?readme=1)
+   1.[Project Overview]([https://github.com/kwebb31/CS401Group7/new/main?readme=1](https://github.com/kwebb31/CS401Group7/blob/8bf666106cd880314e264690004b8c74025da5b4/README.md))
    
   2.[SRS Document](https://github.com/kwebb31/CS401Group7/blob/fa84e197204f65027ec9ba2dbd28736fb64a25c2/Group%207%20SRS%20Document.pdf)
 
