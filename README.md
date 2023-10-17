@@ -29,7 +29,7 @@ This document is a reference document for the development team as well as the th
 **Gantt Chart**
 
 The Gantt chart illustrates the project timeline, including key milestones, tasks, and their respective deadlines. It helps in visualizing the project schedule and ensures that the team stays on track to meet project deadlines.
-  [Gantt Chart](https://github.com/kwebb31/CS401Group7/blob/fa84e197204f65027ec9ba2dbd28736fb64a25c2/Gantt%20chart%20Group%207.pdf)
+  [Gantt Chart](https://github.com/kwebb31/CS401Group7/blob/main/GanttChart%20Group%207.pdf)
 
 **Meeting Minutes Document**
 
