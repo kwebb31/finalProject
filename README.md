@@ -17,6 +17,8 @@ Welcome to the repository for CS 401 Communications Group 7! This project focuse
   4.[Meeting Minutes Document](https://github.com/kwebb31/CS401Group7/blob/main/Meeting%20Minutes%20Group%207_%20Communcations.pdf)
 
 <ins>**Documents**</ins>
+
+
 **SRS Document**
 
 The Software Requirements Specification (SRS) document outlines the functional and non-functional requirements of the program. 
