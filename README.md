@@ -16,6 +16,15 @@ Welcome to the repository for CS 401 Communications Group 7! This project focuse
   
   4.[Meeting Minutes Document](https://github.com/kwebb31/CS401Group7/blob/main/Meeting%20Minutes%20Group%207_%20Communcations.pdf)
 
+
+  5.[Updated Design Write-Up](https://github.com/kwebb31/CS401Group7/blob/main/Group%207%20Design%20Phase.pdf) 
+
+
+  6.[Updated Meeting Minutes: Design Phase](https://github.com/kwebb31/CS401Group7/blob/main/Meeting%20Minutes%20Group%207_%20Communcations.pdf)
+
+  
+  7.[Updated Gantt Chart](https://github.com/kwebb31/CS401Group7/blob/main/Picture1-combined.pdf)
+
 <ins>**Documents**</ins>
 
 
