@@ -42,9 +42,7 @@ public class Chat {
 		return newMessage;
 
 	}
-	void logMessage(Message newMessage) {
-		//Log.updateLoggedMessageArray(newMessage);
-	}
+
 	String getParticipants() {
 		String myParticipants = "";
 		for (int i = 0; i < participants.size(); i++) 
