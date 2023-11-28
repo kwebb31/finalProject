@@ -1,8 +1,11 @@
 package finalProject;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -23,11 +26,12 @@ public class CommunicationGUI implements CommunicationUserInterface{
 	JButton createGroup;
 	JButton sendNewMessage;
 	JButton viewLogs;
-	JFrame informationFrame;
+	JFrame directoryFrame;
 
 	private JPanel listPanel;
 	private DefaultListModel<String> chats;
-	private JList jlist;
+	private JList jlistchats;
+	private JList jlistDirectory;
 	private JPanel overallPanel;
 
 	
@@ -36,9 +40,9 @@ public class CommunicationGUI implements CommunicationUserInterface{
 	}
 
 	public void processCommands() {
-		username = JOptionPane.showInputDialog("Enter Your Username");
-		password = JOptionPane.showInputDialog("Enter Your Password");
-		
+//		username = JOptionPane.showInputDialog("Enter Your Username");
+//		password = JOptionPane.showInputDialog("Enter Your Password");
+//		
 		
 		setDisplayPanels();
 	}
@@ -60,9 +64,41 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		createGroup = new JButton("Create a group");
 		sendNewMessage = new JButton("Create a new chat");
 		viewLogs = new JButton("View Logs");
-
 		
 		frame.getRootPane().setDefaultButton(logout);
+		
+		
+		// writing the actionListener function for each button pressed to perform
+		// specific required tasks
+		 logout.addActionListener(new ActionListener(){
+			 public void actionPerformed(ActionEvent e) {
+				logout();
+			 	}
+		 	});
+				 
+		showDirectory.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				showDirectory();
+				}
+			});
+				 
+		createGroup.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				createGroup();
+				}
+			});
+				 
+		 sendNewMessage.addActionListener(new ActionListener(){
+			 public void actionPerformed(ActionEvent e) {
+				 sendNewMessage();
+				 }
+			 });
+				 
+		viewLogs.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				 viewLogs();
+				}
+			 });
 		
 		// adding all the buttons to our options panel
 		optionsPanel.add(logout);
@@ -82,10 +118,10 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		 
 		 
 		 // creating a jlist to which our list is passed
-		 jlist = new JList(chats);
+		 jlistchats = new JList(chats);
 		 
 		 // adding that jlist to the listPanel
-		 listPanel.add(jlist);
+		 listPanel.add(jlistchats);
 		 
 		 // creating an overall panel which has a grid layout and adding the optionsPanel
 		 // and listPanel to it
@@ -99,9 +135,70 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		 frame.setSize(1200,800);
 		 frame.setLocationRelativeTo(null);			 
 		 frame.setVisible(true);
-
-
 		
+	}
+	
+	private void logout() {
+		frame.dispose();
+	}
+	
+	private void showDirectory() {
+		directoryFrame = new JFrame();
+		directoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		JPanel directoryOverviewPanel = new JPanel();
+		directoryOverviewPanel.setLayout(new GridLayout());
+		
+		JPanel newDirectoryPanel = new JPanel();
+		newDirectoryPanel.setLayout(new GridLayout());
+		
+		JPanel newOptionsPanel = new JPanel();
+		newOptionsPanel.setLayout(new FlowLayout());
+		
+		JButton sendMessage = new JButton("Send Message");
+//		sendMessage.setPreferredSize(new Dimension(20,20));
+		newOptionsPanel.add(sendMessage);
+		
+		sendMessage.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				sendNewMessage();
+			}
+		});
+		
+//		jlistDirectory = new JList();
+//		newDirectoryPanel.add(jlistDirectory);
+		
+		directoryOverviewPanel.add(newOptionsPanel);
+		directoryOverviewPanel.add(newDirectoryPanel);
+		
+		directoryFrame.getRootPane().setDefaultButton(sendMessage);		
+		directoryFrame.getContentPane().add(directoryOverviewPanel);
+		directoryFrame.setSize(600,600);
+		directoryFrame.setLocationRelativeTo(null);
+		directoryFrame.setVisible(true);
+		
+		
+		
+		
+		
+		
+//		directoryFrame.getContentPane().add(directoryOverviewPanel);
+//		directoryFrame.setSize(800,600);
+//		directoryFrame.setLocationRelativeTo(null);
+//		directoryFrame.setVisible(true);
+//		
+	}
+	
+	private void createGroup() {
+		
+	}
+	
+	private void sendNewMessage() {
+		
+	}
+
+	private void viewLogs() {
+	
 	}
 
 }
