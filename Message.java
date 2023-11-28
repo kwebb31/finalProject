@@ -9,15 +9,13 @@ public class Message {
 	String messageString;
 	String messageSender;
 	String messageReciever;
-	Boolean isSent = false;
-	MessageType messageType;
-	public Message(String messageString, String messageSender, String messageReciever, Boolean isSent MessageType messageType) {
+	MessageStatus messageStatus;
+	public Message(String messageString, String messageSender, String messageReciever, MessageStatus messageStatus) {
 		this.messageString = messageString;
 		this.messageSender = messageSender;
 		this.messageReciever = messageReciever;
 		SetID();
-		this.isSent = isSent;
-		this.messageType = messageType;
+		this.messageStatus = messageStatus;
 	}
 	
 	
@@ -28,8 +26,8 @@ public class Message {
 	}
 	
 	
-	void updateIsSent() {
-		isSent = true;
+	void updateMessageStatus(MessageStatus newStatus) {
+		messageStatus = newStatus;
 	}
 	
 	Date getMessageDate() {
@@ -40,15 +38,19 @@ public class Message {
 	}
 	
 	
-	Boolean getIsSent(){
-	
-		return isSent;
+	String getMessageSender() {
+		return messageSender;
 	}
-	MessageType getMessageType() {
-		return messageType;
+	MessageStatus getMessageStatus() {
+		return messageStatus;
 	}
 	Integer getMessageID() {
 		return messageId;
 	}
+	public String toString() {
+		String myStr = (messageId + "," + messageSender + "," + messageReciever + "," + messageString + "," + messageStatus + "," + messageCreated );
+		return myStr;
+	}
 	
 }
+
