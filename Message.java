@@ -9,6 +9,8 @@ public class Message {
 	String messageString;
 	String messageSender;
 	String messageReciever;
+	Integer messageSenderUID;
+	Integer messageRecieverUID;
 	MessageStatus messageStatus;
 	public Message(String messageString, String messageSender, String messageReciever, MessageStatus messageStatus) {
 		this.messageString = messageString;
