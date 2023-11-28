@@ -9,32 +9,55 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Client {
-	User user = null;
-	static boolean isLoggedIn;
-	static boolean isConnected;
-	static String host = "localhost";
-	static int port = 1234;
+	private User user = null;
+	private static boolean isLoggedIn;
+	private static boolean isConnected;
+	private static String host = "localhost";
+	private static int port = 1234;
+	//private Socket s;
+	private static ObjectOutputStream objectOutputStream;
+	private static ObjectInputStream objectInputStream;
+	private static int loginAttempt = 0;
 	public static void main(String[] args) throws ClassNotFoundException {
 		
 		try (Socket s = new Socket(host,port)) {
 					isLoggedIn = false;
 					isConnected = true;
 	                OutputStream outputStream = s.getOutputStream();
-	                ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+	                objectOutputStream = new ObjectOutputStream(outputStream);
 	           
 	                InputStream inputStream = s.getInputStream();
-	                ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+	                 objectInputStream = new ObjectInputStream(inputStream);
 	                
-	                System.out.println("Client is connected to Server. Select an Option: ");
-	                Scanner sc = new Scanner(System.in);
-	                do {
-	                	
-	                }while (isConnected == true);
+	                System.out.println("Client is connected to Server");
+	               while(loginAttempt == 0) {
+	            	   ;
+	               }
+	                while(isLoggedIn) {
+	                	;
+	                }
 	                
-	                
-
+	                s.close();
+	               
 		}catch(IOException e){
 			e.printStackTrace();
 		}
+
+	}
+	public void login(String user, String pw) {
+		//System.out.println("login request sending");
+		Message Temp = new Message(Type.Login, user + ":" + pw, );
+		objectOutputStream.writeObject(Temp);
+
+		isLoggedIn = true;
+		loginAttempt = 1;
+	}
+	public Message sendMessage() {
+		
+	}
+	public void logout() {
+		isLoggedIn = false;
+		loginAttempt = 0;
+		//isConnected = false;
 	}
 }
