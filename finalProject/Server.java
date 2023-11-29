@@ -8,10 +8,11 @@ import java.util.Scanner;
 
 
 public class Server {
-	private static ArrayList<String> UserIDArray = new ArrayList<String>();
-	private static ArrayList<String> pwArray = new ArrayList<String>();
+	//private static ArrayList<String> UserIDArray = new ArrayList<String>();
+	//private static ArrayList<String> pwArray = new ArrayList<String>();
 	private static ArrayList<User> users = new ArrayList<User>();
 	private static ArrayList<ClientHandler> clients = new ArrayList<ClientHandler>();
+	private static ArrayList<Message> asyncMessages  = new ArrayList<Message>();
 	static ArrayList<Socket> clientsockets;
 	private static int activeClients = 0;
 	private static ObjectOutputStream objectOutputStream;
@@ -64,16 +65,13 @@ public class Server {
 	private static class ClientHandler implements Runnable{
 	    // the user using this client
 	 	private User current = null;
-	 	private ArrayList<User> users;
 		// set the input and outputs
 		//socket
 		private final Socket s;
-		// user is logged in, true or false
-		boolean isLoggedIn;
+		
 		// constructor
 		public ClientHandler(Socket socket) {
 			this.s = socket;
-			this.users = users;
 		}
 		
 		public void run() {
@@ -140,6 +138,7 @@ public class Server {
 		    }
 	
 		void offlineMessage(Message message){
+			asyncMessages.add(message);
 			
 		}
 	}
