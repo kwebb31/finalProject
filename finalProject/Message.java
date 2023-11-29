@@ -14,6 +14,14 @@ public class Message {
 	Boolean isSent;
 	
 	MessageType messageType;
+	public Message(String messageString, String messageSender, String messageReciever, MessageType messageType, Integer recieverUID) {
+		this.messageString = messageString;
+		this.messageSender = messageSender;
+		this.messageReceiver = messageReciever;
+		this.messageType = messageType;
+		messageRecieverUID = recieverUID;
+		isSent = false;
+	}
 	public Message(String messageString, String messageSender, String messageReciever, MessageType messageType, Integer senderUID, Integer recieverUID) {
 		this.messageString = messageString;
 		this.messageSender = messageSender;
