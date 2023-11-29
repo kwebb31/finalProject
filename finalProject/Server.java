@@ -142,7 +142,7 @@ public class Server {
 		
 		void sendAsynchronousMessage() throws IOException {
 					for(Message msg : asyncMessages) {
-						if(current.userIsOnline == true) {
+						if(msg.messageReceiverUID == current.id && current.userIsOnline == true) {
 							 objectOutputStream.writeObject(msg);
 							 if(msg.messageRecieverUID == current.id) {
 								 asyncMessages.remove(msg);
