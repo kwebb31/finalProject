@@ -111,7 +111,7 @@ public class Server {
 			 for (User user : users) {
 		            if (user.userName.equals(temp2[0]) && user.getPassword().equals(temp2[1])) {
 		                user.signIn();
-		                Message temp3 = new Message(user.toCsvString(),"Server",user.userName,false,MessageType.LOGIN);
+		                Message temp3 = new Message(user.toString(),"Server",user.userName,MessageType.LOGIN,user.id);
 		                objectOutputStream.writeObject(temp3);
 		                current = user;
 		              
@@ -120,7 +120,7 @@ public class Server {
 		        }
 		}
 		
-		private void sendSynchronousMessage(ArrayList<ClientHandler> clients,Message message) throws IOException {
+		private void sendSynchronousMessage(Message message) throws IOException {
 		    boolean recipientFound = false;
 		    
 
