@@ -11,13 +11,15 @@ public class Message {
 	String messageReciever;
 	Integer messageSenderUID;
 	Integer messageRecieverUID;
-	MessageStatus messageStatus;
-	public Message(String messageString, String messageSender, String messageReciever, MessageStatus messageStatus) {
+	MessageType messageType;
+	public Message(String messageString, String messageSender, String messageReciever, MessageType messageType, Integer senderUID, Integer recieverUID) {
 		this.messageString = messageString;
 		this.messageSender = messageSender;
 		this.messageReciever = messageReciever;
 		SetID();
-		this.messageStatus = messageStatus;
+		this.messageType = messageType;
+		messageSenderUID = senderUID;
+		messageRecieverUID = recieverUID;
 	}
 	
 	
@@ -28,8 +30,8 @@ public class Message {
 	}
 	
 	
-	void updateMessageStatus(MessageStatus newStatus) {
-		messageStatus = newStatus;
+	private void updateMessageType(MessageType newType) {
+		messageType = newType;
 	}
 	
 	Date getMessageDate() {
@@ -43,16 +45,23 @@ public class Message {
 	String getMessageSender() {
 		return messageSender;
 	}
-	MessageStatus getMessageStatus() {
-		return messageStatus;
+	MessageType getMessageType() {
+		return messageType;
 	}
 	Integer getMessageID() {
 		return messageId;
 	}
+	
+	Integer getMessageSenderUID() {
+		return messageSenderUID;
+	}
+	
+	Integer getRecieverUID() {
+		return messageRecieverUID;
+	}
 	public String toString() {
-		String myStr = (messageId + "," + messageSender + "," + messageReciever + "," + messageString + "," + messageStatus + "," + messageCreated );
+		String myStr = (messageId + "," + messageSender + "," + messageReciever + "," + messageString + "," + messageType + "," + messageCreated );
 		return myStr;
 	}
 	
 }
-
