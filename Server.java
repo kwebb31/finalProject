@@ -103,6 +103,10 @@ public class Server {
 		 
        
 		}
+		//getter to retrieve the OutputStream for the client we want to work with
+		public ObjectOutputStream getObjectOutputStream() throws IOException {
+			return new ObjectOutputStream(this.s.getOutputStream());
+		}
 		private void authenticate(Message msg) throws IOException {
 			String temp = msg.getMessageString();
 			String[] temp2 = temp.split(":");
@@ -125,7 +129,7 @@ public class Server {
 		    for (ClientHandler client : clients) {
 		         if(client.current.userName.equals(message.messageReciever)) {
 		        	 recipientFound = true;
-		        	 objectOutputStream.writeObject(message);
+		        	 client.getObjectOutputStream().writeObject(message);
 		        	 break;
 		         }
 		    }
@@ -140,8 +144,6 @@ public class Server {
 		}
 	}
 }
-
-
 
  
 		
