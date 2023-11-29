@@ -1,9 +1,11 @@
 package finalProject;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Message {
+public class Message implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
 	static Integer messageId = 0;
 	Date messageCreated = new Date();
 	String messageString;
@@ -48,16 +50,19 @@ public class Message {
 		messageType = newType;
 	}
 	
-	Date getMessageDate() {
-		return messageCreated;
-	}
 	String getMessageString() {
 		return messageString;
 	}
 	
+	Date getMessageDate() {
+		return messageCreated;
+	}
 	
 	String getMessageSender() {
 		return messageSender;
+	}
+	String getMessageReceiver() {
+		return messageReceiver;
 	}
 	MessageType getMessageType() {
 		return messageType;

@@ -1,0 +1,8 @@
+1,IT,tommy,password1
+2,IT,kat,password2
+3,IT,jon,password3
+4,IT,vansh,password4
+5,REGULAR,tommy2,password5
+6,REGULAR,kat2,password6
+7,REGULAR,jon2,password7
+8,REGULAR,vansh2,password8

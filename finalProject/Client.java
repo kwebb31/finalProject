@@ -44,7 +44,7 @@ public class Client {
 		}
 
 	}
-	public static void login(String username, String pw) throws IOException, ClassNotFoundException {
+	public static Boolean login(String username, String pw) throws IOException, ClassNotFoundException {
 		System.out.println("login request sending");
 		Message Temp = new Message(username + ":" + pw,username,"Server",MessageType.LOGIN,0);
 		objectOutputStream.writeObject(Temp);
@@ -59,13 +59,25 @@ public class Client {
 		isLoggedIn = true;
 		loginAttempt = 1;
 		System.out.println("Login Success!");
+		return isLoggedIn;
 	}
-	//public Message sendMessage() {
+	public void sendMessage(String msg, String sender, String receiver, String senderUID, String receiverUID ) {
 		
-	//}
-	public void logout() {
+	}
+	public Message receiveMessage() throws ClassNotFoundException, IOException {
+		Message Temp = (Message) objectInputStream.readObject();
+		return Temp;
+	}
+	public static Boolean logout() throws IOException, ClassNotFoundException {
+		Message Temp = new Message("",user.userName,"Server",MessageType.LOGOUT,0);
+		objectOutputStream.writeObject(Temp);
+		Temp = (Message) objectInputStream.readObject();
+		if(Temp.getMessageString().equals("Success")) {
+			user = new User();
+		}
 		isLoggedIn = false;
 		loginAttempt = 0;
 		//isConnected = false;
+		return isLoggedIn;
 	}
 }
