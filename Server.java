@@ -118,20 +118,27 @@ public class Server {
 		        }
 		}
 		
-		private void sendSynchronousMessage(ArrayList<ClientHandler> clients,Message message) {
+		private void sendSynchronousMessage(ArrayList<ClientHandler> clients,Message message) throws IOException {
 		    boolean recipientFound = false;
+		    
 
 		    for (ClientHandler client : clients) {
 		         if(client.current.userName.equals(message.messageReciever)) {
-		        	 
+		        	 recipientFound = true;
+		        	 objectOutputStream.writeObject(message);
+		        	 break;
 		         }
-		            
-		            
-		            
-		        }
 		    }
-}
-
+		    if(recipientFound == false) {
+		    	//write this message to the file and arraylist associated with async messages
+		    	offlineMessage(message);
+		    }
+		    }
+	
+		void offlineMessage(Message message){
+			
+		}
+	}
 }
 
 
