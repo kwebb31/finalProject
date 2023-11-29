@@ -144,7 +144,7 @@ public class Server {
 					for(Message msg : asyncMessages) {
 						if(msg.messageReceiverUID == current.id && current.userIsOnline == true) {
 							 objectOutputStream.writeObject(msg);
-							 if(msg.messageRecieverUID == current.id) {
+							 if(msg.messageReceiverUID == current.id) {
 								 asyncMessages.remove(msg);
 							 }
 						}
