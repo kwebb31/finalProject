@@ -38,7 +38,7 @@ public class Chat {
 	}
 	Message recieveMessage(Message newMessage) {
 		messages.add(newMessage);
-		logMessage(newMessage);
+	
 		return newMessage;
 
 	}
