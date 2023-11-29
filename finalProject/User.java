@@ -13,7 +13,15 @@ public class User {
 	Boolean userLoginSuccessful;
 	ArrayList<String> userChatroomArray = new ArrayList<String>();
 	ArrayList<String> userIDList = new ArrayList<String>();
-	
+	//Default empty user constructor
+	public User() {
+		this.userName = null;
+		this.userRole = null;
+		this.userPassword = null;
+		this.userIsOnline = null;
+		this.userLoginSuccessful = null;
+	}
+	// constructor using parameters
 	public User(String userName, Role userRole, String userPassword, Boolean userIsOnline, Boolean userLoginSuccessful ) {
 		this.userName = userName;
 		SetID();
