@@ -9,7 +9,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Client {
-	private User user = null;
+	private static  User user = new User();
 	private static boolean isLoggedIn;
 	private static boolean isConnected;
 	private static String host = "localhost";
@@ -29,9 +29,9 @@ public class Client {
 	                InputStream inputStream = s.getInputStream();
 	                 objectInputStream = new ObjectInputStream(inputStream);
 	                
-	                System.out.println("Client is connected to Server");
+	                //System.out.println("Client is connected to Server");
 	               while(loginAttempt == 0) {
-	            	   ;
+	            	   login("tommy","password1");
 	               }
 	                while(isLoggedIn) {
 	                	;
@@ -44,17 +44,25 @@ public class Client {
 		}
 
 	}
-	public void login(String user, String pw) {
-		//System.out.println("login request sending");
-		Message Temp = new Message(Type.Login, user + ":" + pw, );
+	public static void login(String username, String pw) throws IOException, ClassNotFoundException {
+		System.out.println("login request sending");
+		Message Temp = new Message(username + ":" + pw,username,"Server",false,MessageType.LOGIN);
 		objectOutputStream.writeObject(Temp);
-
+		Temp = (Message) objectInputStream.readObject();
+		String[] parse = Temp.getMessageString().split(",");
+		user.userName = parse[0];
+		user.id = Integer.valueOf(parse[1]);
+		user.userRole = Role.valueOf(parse[2]);
+		user.userPassword = parse[3];
+		user.userIsOnline = Boolean.valueOf(parse[4]);
+		user.userLoginSuccessful = Boolean.valueOf(parse[5]);
 		isLoggedIn = true;
 		loginAttempt = 1;
+		System.out.println("Login Success!");
 	}
-	public Message sendMessage() {
+	//public Message sendMessage() {
 		
-	}
+	//}
 	public void logout() {
 		isLoggedIn = false;
 		loginAttempt = 0;
