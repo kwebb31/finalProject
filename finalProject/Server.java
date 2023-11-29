@@ -87,7 +87,9 @@ public class Server {
 	             //InputStream inputStream = s.getInputStream();
 	             //objectInputStream = new ObjectInputStream(inputStream);
 				 while(true) {
+					 sendAsynchronousMessage();
 					 Message temp = (Message) objectInputStream.readObject();
+					 
 					 if (temp.getMessageType().equals(MessageType.LOGIN)) {
 						 authenticate(temp);
 					 }
@@ -144,8 +146,22 @@ public class Server {
 			writer.close();
 			
 		}
+		
+		void sendAsynchronousMessage() throws IOException {
+			for(ClientHandler client : clients) {
+					for(Message msg : asyncMessages) {
+						if(client.current.userIsOnline == true) {
+							 client.getObjectOutputStream().writeObject(msg);
+							 if(msg.messageRecieverUID == client.current.id) {
+								 asyncMessages.remove(msg);
+							 }
+						}
+					}		
+				}	
+			}
+		}
 	}
-}
+
 
  
 		
