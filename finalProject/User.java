@@ -65,6 +65,8 @@ public class User {
 	String getPassword() {
 		return userPassword;
 	}
-	
+	public String toString() {
+	    return userName + "," + id + "," + userRole + "," + userPassword + "," + userIsOnline + "," + userLoginSuccessful;
+	}
 	
 }
