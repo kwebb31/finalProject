@@ -71,7 +71,7 @@ public class Message {
 		return isSent;}
 	
 	public String toString() {
-		String myStr = (messageId + "," + messageSender + "," + messageReciever + "," + messageString + "," + messageType + "," + messageCreated );
+		String myStr = (messageId + "," + messageSender + "," + messageReciever + "," + messageString + "," + messageType + "," + messageCreated + "\n" );
 		return myStr;
 	}
 	
