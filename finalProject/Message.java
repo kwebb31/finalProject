@@ -8,7 +8,7 @@ public class Message {
 	Date messageCreated = new Date();
 	String messageString;
 	String messageSender;
-	String messageReciever;
+	String messageReceiver;
 	Integer messageSenderUID;
 	Integer messageRecieverUID;
 	Boolean isSent;
@@ -17,7 +17,7 @@ public class Message {
 	public Message(String messageString, String messageSender, String messageReciever, MessageType messageType, Integer senderUID, Integer recieverUID) {
 		this.messageString = messageString;
 		this.messageSender = messageSender;
-		this.messageReciever = messageReciever;
+		this.messageReceiver = messageReciever;
 		SetID();
 		this.messageType = messageType;
 		messageSenderUID = senderUID;
@@ -71,7 +71,7 @@ public class Message {
 		return isSent;}
 	
 	public String toString() {
-		String myStr = (messageId + "," + messageSender + "," + messageReciever + "," + messageString + "," + messageType + "," + messageCreated + "\n" );
+		String myStr = (messageId + "," + messageSender + "," + messageReceiver + "," + messageString + "," + messageType + "," + messageCreated + "\n" );
 		return myStr;
 	}
 	

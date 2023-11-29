@@ -125,7 +125,7 @@ public class Server {
 		    
 
 		    for (ClientHandler client : clients) {
-		         if(client.current.userName.equals(message.messageReciever)) {
+		         if(client.current.userName.equals(message.messageReceiver)) {
 		        	 recipientFound = true;
 		        	 client.getObjectOutputStream().writeObject(message);
 		        	 break;
@@ -137,8 +137,11 @@ public class Server {
 		    }
 		    }
 	
-		void offlineMessage(Message message){
+		void offlineMessage(Message message) throws IOException{
 			asyncMessages.add(message);
+			FileWriter writer = new FileWriter("asyncMessages.csv" , true);
+			writer.write(message.toString());
+			writer.close();
 			
 		}
 	}
