@@ -68,33 +68,24 @@ public class Server {
 		// set the input and outputs
 		//socket
 		private final Socket s;
-		
 		// constructor
 		public ClientHandler(Socket socket) {
 			this.s = socket;
 		}
-		
 		public void run() {
 		users = UserLoader.loadUsersFromFile("users.txt"); 
 			 try {
-				 sendAsynchronousMessage();
-
-				 while(true) {
-					 
-					 Message temp = (Message) objectInputStream.readObject();
-					 
+				 while(true) { 
+					 Message temp = (Message) objectInputStream.readObject(); 
 					 if (temp.getMessageType().equals(MessageType.LOGIN)) {
 						 authenticate(temp);
 					 }
 				 }
-			 } catch(IOException e) {
-				 
+			 } catch(IOException e) {	 
 			 } catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		 
-       
 		}
 		//getter to retrieve the OutputStream for the client we want to work with
 		public ObjectOutputStream getObjectOutputStream() throws IOException {
@@ -109,7 +100,7 @@ public class Server {
 		                Message temp3 = new Message(user.toString(),"Server",user.userName,MessageType.LOGIN,user.id);
 		                objectOutputStream.writeObject(temp3);
 		                current = user;
-		              
+		                sendAsynchronousMessage();
 		                System.out.println("Login Success");
 		            }
 		        }
@@ -117,8 +108,6 @@ public class Server {
 		
 		private void sendSynchronousMessage(Message message) throws IOException {
 		    boolean recipientFound = false;
-		    
-
 		    for (ClientHandler client : clients) {
 		         if(client.current.userName.equals(message.messageReceiver)) {
 		        	 recipientFound = true;
@@ -141,17 +130,22 @@ public class Server {
 		}
 		
 		void sendAsynchronousMessage() throws IOException {
-					for(Message msg : asyncMessages) {
-						if(msg.messageReceiverUID == current.id && current.userIsOnline == true) {
-							 objectOutputStream.writeObject(msg);
-							 if(msg.messageReceiverUID == current.id) {
-								 asyncMessages.remove(msg);
-							 }
-						}
-					}		
-				}	
+			for(Message msg : asyncMessages) {
+				if(msg.messageReceiverUID == current.id && current.userIsOnline == true) {
+					objectOutputStream.writeObject(msg);
+					if(msg.messageReceiverUID == current.id) {
+						asyncMessages.remove(msg);
+					}
+				}
 			}
-		}
+			FileWriter writer = new FileWriter("asyncMessages.csv", true);
+			for(Message msg : asyncMessages) {
+				writer.write(msg.toString());
+			}
+			writer.close();
+		}	
+	}
+}
 
 
 
