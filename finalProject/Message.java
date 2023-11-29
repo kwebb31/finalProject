@@ -10,26 +10,26 @@ public class Message {
 	String messageSender;
 	String messageReceiver;
 	Integer messageSenderUID;
-	Integer messageRecieverUID;
+	Integer messageReceiverUID;
 	Boolean isSent;
 	
 	MessageType messageType;
-	public Message(String messageString, String messageSender, String messageReceiver, MessageType messageType, Integer recieverUID) {
+	public Message(String messageString, String messageSender, String messageReceiver, MessageType messageType, Integer receiverUID) {
 		this.messageString = messageString;
 		this.messageSender = messageSender;
 		this.messageReceiver = messageReceiver;
 		this.messageType = messageType;
-		messageRecieverUID = recieverUID;
+		messageReceiverUID = receiverUID;
 		isSent = false;
 	}
-	public Message(String messageString, String messageSender, String messageReceiver, MessageType messageType, Integer senderUID, Integer recieverUID) {
+	public Message(String messageString, String messageSender, String messageReceiver, MessageType messageType, Integer senderUID, Integer receiverUID) {
 		this.messageString = messageString;
 		this.messageSender = messageSender;
 		this.messageReceiver = messageReceiver;
 		SetID();
 		this.messageType = messageType;
 		messageSenderUID = senderUID;
-		messageRecieverUID = recieverUID;
+		messageReceiverUID = receiverUID;
 		isSent = false;
 	}
 	
@@ -71,7 +71,7 @@ public class Message {
 	}
 	
 	Integer getRecieverUID() {
-		return messageRecieverUID;
+		return messageReceiverUID;
 	}
 
 	Boolean getIsSent(){
