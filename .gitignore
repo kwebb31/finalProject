@@ -1,0 +1,13 @@
+/Chat.class
+/Client.class
+/CommunicationGUI.class
+/CommunicationManager.class
+/CommunicationUserInterface.class
+/Log.class
+/Message.class
+/MessageType.class
+/Role.class
+/Server$ClientHandler.class
+/Server.class
+/User.class
+/UserLoader.class
