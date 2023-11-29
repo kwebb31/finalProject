@@ -11,6 +11,8 @@ public class Message {
 	String messageReciever;
 	Integer messageSenderUID;
 	Integer messageRecieverUID;
+	Boolean isSent;
+	
 	MessageType messageType;
 	public Message(String messageString, String messageSender, String messageReciever, MessageType messageType, Integer senderUID, Integer recieverUID) {
 		this.messageString = messageString;
@@ -20,6 +22,7 @@ public class Message {
 		this.messageType = messageType;
 		messageSenderUID = senderUID;
 		messageRecieverUID = recieverUID;
+		isSent = false;
 	}
 	
 	
@@ -28,6 +31,9 @@ public class Message {
 		messageId++;
 
 	}
+	
+	void updateIsSent() {
+		isSent = true;}
 	
 	
 	private void updateMessageType(MessageType newType) {
@@ -59,6 +65,11 @@ public class Message {
 	Integer getRecieverUID() {
 		return messageRecieverUID;
 	}
+
+	Boolean getIsSent(){
+
+		return isSent;}
+	
 	public String toString() {
 		String myStr = (messageId + "," + messageSender + "," + messageReciever + "," + messageString + "," + messageType + "," + messageCreated );
 		return myStr;
