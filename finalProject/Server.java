@@ -75,19 +75,12 @@ public class Server {
 		}
 		
 		public void run() {
-	        // get the input stream from the connected socket
-		//OutputStream outputStream = null;
-	    //ObjectOutputStream objectOutputStream = null;
-	    //InputStream inputStream = null;
-	    //ObjectInputStream objectInputStream = null;
 		users = UserLoader.loadUsersFromFile("users.txt"); 
 			 try {
-				 //OutputStream outputStream = s.getOutputStream();
-	             //objectOutputStream = new ObjectOutputStream(outputStream);
-	             //InputStream inputStream = s.getInputStream();
-	             //objectInputStream = new ObjectInputStream(inputStream);
+				 sendAsynchronousMessage();
+
 				 while(true) {
-					 sendAsynchronousMessage();
+					 
 					 Message temp = (Message) objectInputStream.readObject();
 					 
 					 if (temp.getMessageType().equals(MessageType.LOGIN)) {
@@ -148,11 +141,10 @@ public class Server {
 		}
 		
 		void sendAsynchronousMessage() throws IOException {
-			for(ClientHandler client : clients) {
 					for(Message msg : asyncMessages) {
-						if(client.current.userIsOnline == true) {
-							 client.getObjectOutputStream().writeObject(msg);
-							 if(msg.messageRecieverUID == client.current.id) {
+						if(current.userIsOnline == true) {
+							 objectOutputStream.writeObject(msg);
+							 if(msg.messageRecieverUID == current.id) {
 								 asyncMessages.remove(msg);
 							 }
 						}
@@ -160,7 +152,7 @@ public class Server {
 				}	
 			}
 		}
-	}
+
 
 
  
