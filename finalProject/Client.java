@@ -46,7 +46,7 @@ public class Client {
 	}
 	public static void login(String username, String pw) throws IOException, ClassNotFoundException {
 		System.out.println("login request sending");
-		Message Temp = new Message(username + ":" + pw,username,"Server",false,MessageType.LOGIN);
+		Message Temp = new Message(username + ":" + pw,username,"Server",MessageType.LOGIN,0);
 		objectOutputStream.writeObject(Temp);
 		Temp = (Message) objectInputStream.readObject();
 		String[] parse = Temp.getMessageString().split(",");
