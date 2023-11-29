@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -27,6 +28,7 @@ public class CommunicationGUI implements CommunicationUserInterface{
 	JButton sendNewMessage;
 	JButton viewLogs;
 	JFrame directoryFrame;
+	private int counter;
 
 	private JPanel listPanel;
 	private DefaultListModel<String> chats;
@@ -37,15 +39,43 @@ public class CommunicationGUI implements CommunicationUserInterface{
 	
 	public CommunicationGUI(Client client) {
 		this.client = client;
+		this.counter = 0;
 	}
 
 	public void processCommands() {
-//		username = JOptionPane.showInputDialog("Enter Your Username");
-//		password = JOptionPane.showInputDialog("Enter Your Password");
-//		
 		
-		setDisplayPanels();
+		if(counter == 0) {
+			username = JOptionPane.showInputDialog("Enter Your Username");
+			password = JOptionPane.showInputDialog("Enter Your Password");
+			
+		}
+		
+		else {
+			username = JOptionPane.showInputDialog("Failed Login! Incorrect Details! Try again! \nEnter Your Username");
+			password = JOptionPane.showInputDialog("Enter Your Password");
+		}
+		
+		
+		try {
+			if(client.login(username, password)) {
+				setDisplayPanels();
+			}
+			
+			else {
+				counter++;
+				processCommands();
+			}
+			
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+//		
 	}
+	
 	
 	private void setDisplayPanels(){
 		
