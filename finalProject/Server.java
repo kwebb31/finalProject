@@ -92,6 +92,10 @@ public class Server {
 					 else if(temp.getMessageType().equals(MessageType.TEXT)) {
 						 sendSynchronousMessage(temp);
 					 }
+					 else if(temp.getMessageType().equals(MessageType.DIRECTORY)) {
+						 returnUserDirectory(temp);
+					 }
+					 
 				 }
 			 } catch(IOException e) {	 
 			 } catch (ClassNotFoundException e) {
@@ -183,6 +187,10 @@ public class Server {
 		                System.out.println("Logout Success");
 		            }
 		        }
+		}
+		
+		private Message returnUserDirectory(Message temp) {
+			return temp;
 		}
 	}
 }
