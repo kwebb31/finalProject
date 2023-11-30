@@ -31,6 +31,7 @@ public class Client {
 	                
 	                //System.out.println("Client is connected to Server");
 	               while(loginAttempt == 0) {
+	            	   login("tommy1","password1");
 	               }
 	                while(isLoggedIn) {
 	                	;
@@ -48,6 +49,9 @@ public class Client {
 		Message Temp = new Message(username + ":" + pw,username,"Server",MessageType.LOGIN,0);
 		objectOutputStream.writeObject(Temp);
 		Temp = (Message) objectInputStream.readObject();
+		if(Temp.getMessageString().equals("Unsuccessful")) {
+			return false;
+		}
 		String[] parse = Temp.getMessageString().split(",");
 		user.userName = parse[0];
 		user.id = Integer.valueOf(parse[1]);
@@ -88,13 +92,10 @@ public class Client {
 	}
 	
 	public static String getUserDirectory() throws IOException, ClassNotFoundException {
-		String myMessage = "";
 		System.out.println("login request sending");
 		Message userDirectory =  new Message(user.getUserName(), user.getUserName(), "Server",MessageType.DIRECTORY,0);
 		objectOutputStream.writeObject(userDirectory);
 		userDirectory = (Message) objectInputStream.readObject();
-		System.out.println("User Directory Success");
 		return userDirectory.getMessageString();
-
 	}
 }
