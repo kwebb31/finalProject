@@ -12,7 +12,7 @@ public class Client {
 	private static  User user = new User();
 	private static boolean isLoggedIn;
 	private static boolean isConnected;
-	private static String host = "localhost";
+	private static String host = "134.154.72.171";
 	private static int port = 1234;
 	//private Socket s;
 	private static ObjectOutputStream objectOutputStream;
@@ -31,6 +31,7 @@ public class Client {
 	                
 	                //System.out.println("Client is connected to Server");
 	               while(loginAttempt == 0) {
+	            	   login("tommy1","password1");
 	               }
 	                while(isLoggedIn) {
 	                	;
@@ -48,6 +49,9 @@ public class Client {
 		Message Temp = new Message(username + ":" + pw,username,"Server",MessageType.LOGIN,0);
 		objectOutputStream.writeObject(Temp);
 		Temp = (Message) objectInputStream.readObject();
+		if(Temp.getMessageString().equals("Unsuccessful")) {
+			return false;
+		}
 		String[] parse = Temp.getMessageString().split(",");
 		user.userName = parse[0];
 		user.id = Integer.valueOf(parse[1]);
@@ -92,6 +96,6 @@ public class Client {
 		Message userDirectory =  new Message(user.getUserName(), user.getUserName(), "Server",MessageType.DIRECTORY,0);
 		objectOutputStream.writeObject(userDirectory);
 		userDirectory = (Message) objectInputStream.readObject();
-
+		return userDirectory.getMessageString();
 	}
 }
