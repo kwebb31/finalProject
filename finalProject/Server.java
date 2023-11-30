@@ -2,6 +2,7 @@ package finalProject;
 
 import java.io.*;
 import java.net.*;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -17,6 +18,8 @@ public class Server {
 	private static int activeClients = 0;
 	private static ObjectOutputStream objectOutputStream;
 	private static ObjectInputStream objectInputStream;
+	//private static Log = new Log();
+	
 	public static void main(String[] args) {
 		ServerSocket ss = null;
 		
@@ -73,12 +76,18 @@ public class Server {
 			this.s = socket;
 		}
 		public void run() {
-		users = UserLoader.loadUsersFromFile("users.txt"); 
+		users = UserLoader.loadUsersFromFile("users.txt");
+		
 			 try {
+				 loadAsyncMessages();
 				 while(true) { 
 					 Message temp = (Message) objectInputStream.readObject(); 
 					 if (temp.getMessageType().equals(MessageType.LOGIN)) {
 						 authenticate(temp);
+					 }
+					 else if(temp.getMessageType().equals(MessageType.LOGOUT)) {
+						 logout(temp);
+						 break;
 					 }
 				 }
 			 } catch(IOException e) {	 
@@ -100,10 +109,12 @@ public class Server {
 		                Message temp3 = new Message(user.toString(),"Server",user.userName,MessageType.LOGIN,user.id);
 		                objectOutputStream.writeObject(temp3);
 		                current = user;
-		                sendAsynchronousMessage();
 		                System.out.println("Login Success");
+		                sendAsynchronousMessage();
+		                break;
 		            }
 		        }
+			 
 		}
 		
 		private void sendSynchronousMessage(Message message) throws IOException {
@@ -128,6 +139,17 @@ public class Server {
 			writer.close();
 			
 		}
+		// load the messages from file to arraylist on server start
+		void loadAsyncMessages() throws IOException {
+			BufferedReader reader = new BufferedReader(new FileReader("asyncMessages.csv"));
+			String line = reader.readLine();
+			while(line != null) {
+				String[] parse = line.split(",");
+				Message temp = new Message(parse[3], parse[1],parse[2],MessageType.valueOf(parse[4]),Integer.parseInt(parse[6],Integer.parseInt(parse[7])));
+				temp.SetMessageDate(Date.valueOf(parse[5]));
+				asyncMessages.add(temp);
+			}
+		}
 		
 		void sendAsynchronousMessage() throws IOException {
 			for(Message msg : asyncMessages) {
@@ -143,7 +165,21 @@ public class Server {
 				writer.write(msg.toString());
 			}
 			writer.close();
-		}	
+		}
+		
+		void logout(Message msg) throws IOException {
+			String temp = msg.getMessageString();
+			String[] temp2 = temp.split(":");
+			 for (User user : users) {
+		            if (user.userName.equals(temp2[0]) && user.getPassword().equals(temp2[1])) {
+		                user.signOut();
+		                Message temp3 = new Message("Success","Server",user.userName,MessageType.LOGIN,user.id);
+		                objectOutputStream.writeObject(temp3);
+		                current = new User();
+		                System.out.println("Logout Success");
+		            }
+		        }
+		}
 	}
 }
 
