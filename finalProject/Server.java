@@ -32,6 +32,7 @@ public class Server {
 			
 			//loop to accept connections
 			while (true) {
+				System.out.println("Looking for connections");
 				Socket client = ss.accept();
 				
 				System.out.println("New client connected "
@@ -108,6 +109,7 @@ public class Server {
 			return new ObjectOutputStream(this.s.getOutputStream());
 		}
 		private void authenticate(Message msg) throws IOException {
+			Boolean success = false;
 			String temp = msg.getMessageString();
 			String[] temp2 = temp.split(":");
 			 for (User user : users) {
@@ -118,9 +120,15 @@ public class Server {
 		                current = user;
 		                System.out.println("Login Success");
 		                sendAsynchronousMessage();
+		                success = true;
 		                break;
 		            }
 		        }
+			 if(success == false) {
+				 Message temp3 = new Message("Unsuccessful","Server","Unknown User",MessageType.LOGIN,0);
+	                objectOutputStream.writeObject(temp3);
+			 }
+			 
 			 
 		}
 		// Send the message to the designated client and user
