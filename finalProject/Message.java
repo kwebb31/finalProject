@@ -50,9 +50,6 @@ public class Message implements Serializable{
 		messageType = newType;
 	}
 	
-	Date getMessageDate() {
-		return messageCreated;
-	}
 	String getMessageString() {
 		return messageString;
 	}
@@ -64,7 +61,7 @@ public class Message implements Serializable{
 	String getMessageSender() {
 		return messageSender;
 	}
-	String getMessageReciever() {
+	String getMessageReceiver() {
 		return messageReceiver;
 	}
 	MessageType getMessageType() {
