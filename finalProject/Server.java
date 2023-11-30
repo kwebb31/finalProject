@@ -146,13 +146,19 @@ public class Server {
 		    	offlineMessage(message);
 		    }
 		    }
-		// add the message to an arraylist that will be held by server until users are online
-		void offlineMessage(Message message) throws IOException{
-			asyncMessages.add(message);
-			FileWriter writer = new FileWriter("asyncMessages.csv" , true);
-			writer.write(message.toString());
-			writer.close();
-			
+		// load the messages from file to arraylist on server start
+		void loadAsyncMessages() throws IOException {
+			BufferedReader reader = new BufferedReader(new FileReader("asyncMessages.csv"));
+			String line = reader.readLine();
+			while(line != null) {
+				String[] getMessageAlone = line.split("\n");
+				for(String message : getMessageAlone) {
+					String[] parse = line.split(",");
+					Message temp = new Message(parse[3], parse[1],parse[2],MessageType.valueOf(parse[4]),Integer.parseInt(parse[6],Integer.parseInt(parse[7])));
+					temp.setMessageDate(Date.valueOf(parse[5]));
+					asyncMessages.add(temp);
+				}
+			}
 		}
 		// load the messages from file to arraylist on server start
 		void loadAsyncMessages() throws IOException {
