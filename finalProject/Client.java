@@ -12,7 +12,7 @@ public class Client {
 	private static  User user = new User();
 	private static boolean isLoggedIn;
 	private static boolean isConnected;
-	private static String host = "localhost";
+	private static String host = "134.154.72.171";
 	private static int port = 1234;
 	//private Socket s;
 	private static ObjectOutputStream objectOutputStream;
@@ -88,10 +88,13 @@ public class Client {
 	}
 	
 	public static String getUserDirectory() throws IOException, ClassNotFoundException {
+		String myMessage = "";
 		System.out.println("login request sending");
 		Message userDirectory =  new Message(user.getUserName(), user.getUserName(), "Server",MessageType.DIRECTORY,0);
 		objectOutputStream.writeObject(userDirectory);
 		userDirectory = (Message) objectInputStream.readObject();
+		System.out.println("User Directory Success");
+		return userDirectory.getMessageString();
 
 	}
 }
