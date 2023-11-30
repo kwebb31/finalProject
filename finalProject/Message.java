@@ -57,6 +57,9 @@ public class Message implements Serializable{
 		return messageString;
 	}
 	
+	Date getMessageDate() {
+		return messageCreated;
+	}
 	
 	String getMessageSender() {
 		return messageSender;
