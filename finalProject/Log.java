@@ -32,6 +32,7 @@ public class Log {
 	
 	//method that returns string of all logged messages, separated by "\n"
 	public String getAllLogs() {
+		updateLoggedMessageArray();
 		String result = "";
 		for (String loggedMessage : loggedMessagesArray) {
 			result += (loggedMessage + "\n");
@@ -97,7 +98,6 @@ public class Log {
 	//driver for testing, THIS SHOULD BE DELETED
 	public static void main(String[] args) {
         Log log = new Log();
-        log.updateLoggedMessageArray();
         
         //test getAllLogs
         System.out.println("All messages from textfile:");
