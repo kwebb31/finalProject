@@ -35,6 +35,7 @@ public class CommunicationGUI implements CommunicationUserInterface{
 	private JList jlistchats;
 	private JList jlistDirectory;
 	private JPanel overallPanel;
+	private DefaultListModel<String> userList;
 
 	
 	public CommunicationGUI(Client client) {
@@ -56,6 +57,8 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		}
 		
 		
+//		setDisplayPanels();
+		
 		try {
 			if(client.login(username, password)) {
 				setDisplayPanels();
@@ -73,7 +76,7 @@ public class CommunicationGUI implements CommunicationUserInterface{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		
+		
 	}
 	
 	
@@ -102,13 +105,26 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		// specific required tasks
 		 logout.addActionListener(new ActionListener(){
 			 public void actionPerformed(ActionEvent e) {
-				logout();
+				try {
+					logout();
+				} catch (ClassNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			 	}
 		 	});
 				 
 		showDirectory.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				showDirectory();
+				try {
+					showDirectory();
+				} catch (ClassNotFoundException | IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				}
 			});
 				 
@@ -120,7 +136,12 @@ public class CommunicationGUI implements CommunicationUserInterface{
 				 
 		 sendNewMessage.addActionListener(new ActionListener(){
 			 public void actionPerformed(ActionEvent e) {
-				 sendNewMessage();
+				 try {
+					sendNewMessage();
+				} catch (ClassNotFoundException | IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				 }
 			 });
 				 
@@ -168,11 +189,12 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		
 	}
 	
-	private void logout() {
+	private void logout() throws ClassNotFoundException, IOException {
+		client.logout();
 		frame.dispose();
 	}
 	
-	private void showDirectory() {
+	private void showDirectory() throws ClassNotFoundException, IOException {
 		directoryFrame = new JFrame();
 		directoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -189,9 +211,24 @@ public class CommunicationGUI implements CommunicationUserInterface{
 //		sendMessage.setPreferredSize(new Dimension(20,20));
 		newOptionsPanel.add(sendMessage);
 		
+		String userDirectory = client.getUserDirectory();
+		
+		
+		userList = new DefaultListModel();
+		
+		
+		
+		
+		
+		
 		sendMessage.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				sendNewMessage();
+				try {
+					sendNewMessage();
+				} catch (ClassNotFoundException | IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		
@@ -223,8 +260,8 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		
 	}
 	
-	private void sendNewMessage() {
-		
+	private void sendNewMessage() throws ClassNotFoundException, IOException {
+		showDirectory();
 	}
 
 	private void viewLogs() {
