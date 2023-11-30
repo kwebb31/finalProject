@@ -93,7 +93,7 @@ public class Server {
 						 sendSynchronousMessage(temp);
 					 }
 					 else if(temp.getMessageType().equals(MessageType.DIRECTORY)) {
-						 returnUserDirectory(temp);
+						 getUserDirectory(temp);
 					 }
 					 
 				 }
@@ -189,8 +189,19 @@ public class Server {
 		        }
 		}
 		
-		private Message returnUserDirectory(Message temp) {
-			return temp;
+		private void getUserDirectory(Message temp) throws IOException {
+			String userName = temp.getMessageSender();
+			String userDirectories = "";
+			for(int i =0; i < users.size(); i++) {
+				if(users.get(i).getUserName().equals(userName)) {
+					continue;
+				}
+				
+				userDirectories+= users.get(i).getUserName() + "\n";
+			}
+			
+			Message userDirectoryListMessage = new Message(userDirectories, "Server", "Client", MessageType.DIRECTORY, 0);
+			objectOutputStream.writeObject(userDirectoryListMessage);
 		}
 	}
 }

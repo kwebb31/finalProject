@@ -87,9 +87,9 @@ public class Client {
 		return isLoggedIn;
 	}
 	
-	public static String getUserDirectory() throws, IOException {
+	public static String getUserDirectory() throws IOException, ClassNotFoundException {
 		System.out.println("login request sending");
-		Message userDirectory =  new Message(Client.user.userName + ":" + Client.user.getPassword(),Client.user.getPassword(), "Server",MessageType.DIRECTORY,0);
+		Message userDirectory =  new Message(user.getUserName(), user.getUserName(), "Server",MessageType.DIRECTORY,0);
 		objectOutputStream.writeObject(userDirectory);
 		userDirectory = (Message) objectInputStream.readObject();
 

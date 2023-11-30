@@ -70,6 +70,11 @@ public class User {
 	String getPassword() {
 		return userPassword;
 	}
+	
+	String getUserName() {
+		return userName;
+	}
+	
 	public String toString() {
 	    return userName + "," + id + "," + userRole + "," + userPassword + "," + userIsOnline + "," + userLoginSuccessful;
 	}
