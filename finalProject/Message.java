@@ -41,6 +41,9 @@ public class Message implements Serializable{
 		messageId++;
 
 	}
+    void setMessageDate(Date date) {
+    	this.messageCreated = date;
+    }
 	
 	void updateIsSent() {
 		isSent = true;}
