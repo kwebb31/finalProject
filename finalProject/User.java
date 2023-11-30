@@ -31,8 +31,6 @@ public class User {
 		this.userLoginSuccessful = userLoginSuccessful;
 	}
 	
-	
-	
 	private void SetID() {
 		idNumber++;
 		this.id =  idNumber;
@@ -41,7 +39,6 @@ public class User {
 	void setPassword(String newPassword) {
 		userPassword = newPassword;
 	}
-	
 	
 	void signOut() {
 		userIsOnline = false;
