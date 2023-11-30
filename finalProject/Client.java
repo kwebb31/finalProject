@@ -31,7 +31,6 @@ public class Client {
 	                
 	                //System.out.println("Client is connected to Server");
 	               while(loginAttempt == 0) {
-	            	   login("tommy","password1");
 	               }
 	                while(isLoggedIn) {
 	                	;
@@ -61,12 +60,19 @@ public class Client {
 		System.out.println("Login Success!");
 		return isLoggedIn;
 	}
-	public void sendMessage(String msg, String sender, String receiver, String senderUID, String receiverUID ) {
-		
+	public void sendMessage(String msg, String sender, String receiver, String senderUID, String receiverUID ) throws IOException {
+		String[] parse = receiver.split(",");
+		String[] parse2 = receiverUID.split(",");
+		int count = 0;
+		for(String s : parse) {
+			Message Temp = new Message(msg, sender, s, MessageType.TEXT, Integer.parseInt(senderUID) ,Integer.parseInt(parse2[count]));
+			count++;
+			objectOutputStream.writeObject(Temp);
+		}
 	}
-	public Message receiveMessage() throws ClassNotFoundException, IOException {
+	public void receiveMessage() throws ClassNotFoundException, IOException {
 		Message Temp = (Message) objectInputStream.readObject();
-		return Temp;
+		
 	}
 	public static Boolean logout() throws IOException, ClassNotFoundException {
 		Message Temp = new Message("",user.userName,"Server",MessageType.LOGOUT,0);
