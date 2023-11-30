@@ -61,6 +61,9 @@ public class Message implements Serializable{
 	String getMessageSender() {
 		return messageSender;
 	}
+	String getMessageReciever() {
+		return messageReceiver;
+	}
 	MessageType getMessageType() {
 		return messageType;
 	}
