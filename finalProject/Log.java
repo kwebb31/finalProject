@@ -81,7 +81,7 @@ public class Log {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM.dd.yy,HH:mm");
 		String formattedDate = dateFormat.format(messageDate);
 		//format the string to be logged
-		String messageToLog = message.getMessageSender() + "," +  message.getMessageSenderUID() + "(" + message.getMessageReciever() + ")" 
+		String messageToLog = message.getMessageSender() + "," +  message.getMessageSenderUID() + "(" + message.getMessageReceiver() + ")" 
 		+ formattedDate + "," + message.getMessageString();
 		//write to file on a new line
 		//THIS IS WHERE THE FILE NAME SHOULD BE CHANGED
