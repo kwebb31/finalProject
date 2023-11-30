@@ -89,6 +89,9 @@ public class Server {
 						 logout(temp);
 						 break;
 					 }
+					 else if(temp.getMessageType().equals(MessageType.TEXT)) {
+						 sendSynchronousMessage(temp);
+					 }
 				 }
 			 } catch(IOException e) {	 
 			 } catch (ClassNotFoundException e) {
@@ -116,7 +119,7 @@ public class Server {
 		        }
 			 
 		}
-		
+		// Send the message to the designated client and user
 		private void sendSynchronousMessage(Message message) throws IOException {
 		    boolean recipientFound = false;
 		    for (ClientHandler client : clients) {
@@ -131,7 +134,7 @@ public class Server {
 		    	offlineMessage(message);
 		    }
 		    }
-	
+		// add the message to an arraylist that will be held by server until users are online
 		void offlineMessage(Message message) throws IOException{
 			asyncMessages.add(message);
 			FileWriter writer = new FileWriter("asyncMessages.csv" , true);
@@ -146,11 +149,11 @@ public class Server {
 			while(line != null) {
 				String[] parse = line.split(",");
 				Message temp = new Message(parse[3], parse[1],parse[2],MessageType.valueOf(parse[4]),Integer.parseInt(parse[6],Integer.parseInt(parse[7])));
-				temp.SetMessageDate(Date.valueOf(parse[5]));
+				temp.setMessageDate(Date.valueOf(parse[5]));
 				asyncMessages.add(temp);
 			}
 		}
-		
+		// check to send messages to users that have logged in.
 		void sendAsynchronousMessage() throws IOException {
 			for(Message msg : asyncMessages) {
 				if(msg.messageReceiverUID == current.id && current.userIsOnline == true) {
@@ -167,6 +170,7 @@ public class Server {
 			writer.close();
 		}
 		
+		// logout method, receives a message object with MessageType logout and then signs the user out and clears the instance of user in this client
 		void logout(Message msg) throws IOException {
 			String temp = msg.getMessageString();
 			String[] temp2 = temp.split(":");
