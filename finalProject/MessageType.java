@@ -4,6 +4,6 @@ public enum MessageType {
 	LOGIN,
 	LOGOUT,
 	TEXT,
-	DIRECTORY;
-
+	DIRECTORY,
+	CREATE_CHAT;
 }
