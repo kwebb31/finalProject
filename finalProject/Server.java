@@ -248,7 +248,7 @@ public class Server {
 					continue;
 				}
 				
-				userDirectories+= users.get(i).getUserName() + "\n";
+				userDirectories+= (users.get(i).getUserName() + "\n");
 			}
 			
 			Message userDirectoryListMessage = new Message(userDirectories, "Server", "Client", MessageType.DIRECTORY);

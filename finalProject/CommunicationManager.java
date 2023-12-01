@@ -11,14 +11,17 @@ import java.util.*;
  * 	Program to display and modify a simple DVD collection
  */
 
-public class CommunicationManager {
-	
+public class CommunicationManager implements Runnable {
+	public static Client client;
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
-
+		
 //		ObjectOutputStream objectOutputStream;
 //		ObjectInputStream objectInputStream;
-		
-     	Client client = new Client();
+		CommunicationManager receive = new CommunicationManager();
+		Thread thread = new Thread(receive);
+		client = new Client();
+     	thread.start();
+     	
 //		ArrayList<Integer> test = new ArrayList<Integer>();
 //		test.add(2);
 //		client.login("tommy", "password1");
@@ -29,6 +32,20 @@ public class CommunicationManager {
 		CommInterface = new CommunicationGUI(client);
 		CommInterface.processCommands();
 
+	}
+
+	@Override
+	public void run() {
+		while(true) {
+			//try {
+				System.out.println("hi");
+				//client.receiveMessage();
+		//	} catch (ClassNotFoundException | IOException e) {
+				// TODO Auto-generated catch block
+			//	e.printStackTrace();
+		//	}
+		}
+		
 	}
 
 }

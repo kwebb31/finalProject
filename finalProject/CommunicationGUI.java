@@ -1,5 +1,7 @@
 package finalProject;
 
+import javax.swing.*;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -14,6 +16,8 @@ import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 public class CommunicationGUI implements CommunicationUserInterface{
 	
@@ -211,7 +215,9 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		newOptionsPanel.add(sendMessage);
 		
 		String userDirectory = client.getUserDirectory();
+		JTextArea jTextArea = new JTextArea(userDirectory);
 		
+		newDirectoryPanel.add(jTextArea);
 		
 		userList = new DefaultListModel();
 		
