@@ -109,6 +109,7 @@ public class Server {
 			return new ObjectOutputStream(this.s.getOutputStream());
 		}
 		private void authenticate(Message msg) throws IOException {
+			System.out.println("authing");
 			Boolean success = false;
 			String temp = msg.getMessageString();
 			String[] temp2 = temp.split(":");
@@ -146,6 +147,15 @@ public class Server {
 		    	offlineMessage(message);
 		    }
 		    }
+		
+		// add the message to an arraylist that will be held by server until users are online
+		void offlineMessage(Message message) throws IOException{
+			asyncMessages.add(message);
+			FileWriter writer = new FileWriter("asyncMessages.csv" , true);
+			writer.write(message.toString());
+			writer.close();
+		}
+		
 		// load the messages from file to arraylist on server start
 		void loadAsyncMessages() throws IOException {
 			BufferedReader reader = new BufferedReader(new FileReader("asyncMessages.csv"));
@@ -161,6 +171,7 @@ public class Server {
 			}
 		}
 		// load the messages from file to arraylist on server start
+		/*
 		void loadAsyncMessages() throws IOException {
 			BufferedReader reader = new BufferedReader(new FileReader("asyncMessages.csv"));
 			String line = reader.readLine();
@@ -171,6 +182,7 @@ public class Server {
 				asyncMessages.add(temp);
 			}
 		}
+		*/
 		// check to send messages to users that have logged in.
 		void sendAsynchronousMessage() throws IOException {
 			for(Message msg : asyncMessages) {

@@ -36,7 +36,7 @@ public class CommunicationGUI implements CommunicationUserInterface{
 	private JList jlistDirectory;
 	private JPanel overallPanel;
 	private DefaultListModel<String> userList;
-
+		
 	
 	public CommunicationGUI(Client client) {
 		this.client = client;
@@ -44,7 +44,6 @@ public class CommunicationGUI implements CommunicationUserInterface{
 	}
 
 	public void processCommands() {
-		
 		if(counter == 0) {
 			username = JOptionPane.showInputDialog("Enter Your Username");
 			password = JOptionPane.showInputDialog("Enter Your Password");

@@ -9,42 +9,28 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Client {
-	private static  User user = new User();
-	private static boolean isLoggedIn;
-	private static boolean isConnected;
-	private static String host = "134.154.72.171";
-	private static int port = 1234;
-	//private Socket s;
-	private static ObjectOutputStream objectOutputStream;
-	private static ObjectInputStream objectInputStream;
-	private static int loginAttempt = 0;
-	public static void main(String[] args) throws ClassNotFoundException {
-		
-		try (Socket s = new Socket(host,port)) {
-					isLoggedIn = false;
-					isConnected = true;
-	                OutputStream outputStream = s.getOutputStream();
-	                objectOutputStream = new ObjectOutputStream(outputStream);
-	           
-	                InputStream inputStream = s.getInputStream();
-	                 objectInputStream = new ObjectInputStream(inputStream);
-	                
-	                //System.out.println("Client is connected to Server");
-	               while(loginAttempt == 0) {
-	            	   login("tommy1","password1");
-	               }
-	                while(isLoggedIn) {
-	                	;
-	                }
-	                
-	                s.close();
-	               
+	private User user = new User();
+	private boolean isLoggedIn;
+	private boolean isConnected;
+	private String host = "localhost";
+	private int port = 1234;
+	private Socket s;
+	private ObjectOutputStream objectOutputStream;
+	private ObjectInputStream objectInputStream;
+	private int loginAttempt = 0;
+	public Client(){
+		try {
+			s = new Socket(host,port);
+            OutputStream outputStream = s.getOutputStream();
+            objectOutputStream = new ObjectOutputStream(outputStream);
+            InputStream inputStream = s.getInputStream();
+            objectInputStream = new ObjectInputStream(inputStream);		                   
 		}catch(IOException e){
 			e.printStackTrace();
 		}
 
 	}
-	public static Boolean login(String username, String pw) throws IOException, ClassNotFoundException {
+	public Boolean login(String username, String pw) throws IOException, ClassNotFoundException {
 		System.out.println("login request sending");
 		Message Temp = new Message(username + ":" + pw,username,"Server",MessageType.LOGIN,0);
 		objectOutputStream.writeObject(Temp);
@@ -78,7 +64,7 @@ public class Client {
 		Message Temp = (Message) objectInputStream.readObject();
 		
 	}
-	public static Boolean logout() throws IOException, ClassNotFoundException {
+	public Boolean logout() throws IOException, ClassNotFoundException {
 		Message Temp = new Message("",user.userName,"Server",MessageType.LOGOUT,0);
 		objectOutputStream.writeObject(Temp);
 		Temp = (Message) objectInputStream.readObject();
@@ -91,7 +77,7 @@ public class Client {
 		return isLoggedIn;
 	}
 	
-	public static String getUserDirectory() throws IOException, ClassNotFoundException {
+	public String getUserDirectory() throws IOException, ClassNotFoundException {
 		System.out.println("login request sending");
 		Message userDirectory =  new Message(user.getUserName(), user.getUserName(), "Server",MessageType.DIRECTORY,0);
 		objectOutputStream.writeObject(userDirectory);
