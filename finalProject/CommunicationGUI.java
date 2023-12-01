@@ -23,12 +23,13 @@ public class CommunicationGUI implements CommunicationUserInterface{
 	
 	private String username;
 	private String password;
+	private String MessageInputMessage;
 	private Client client;
 	private JFrame frame;
 	private JPanel optionsPanel;
 	JButton logout;
 	JButton showDirectory;
-	JButton createGroup;
+	
 	JButton sendNewMessage;
 	JButton viewLogs;
 	JFrame directoryFrame;
@@ -97,7 +98,6 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		// initializing all the Buttons we need on our option panels
 		logout = new JButton("Logout");
 		showDirectory = new JButton("Show Directory");
-		createGroup = new JButton("Create a group");
 		sendNewMessage = new JButton("Create a new chat");
 		viewLogs = new JButton("View Logs");
 		
@@ -131,11 +131,7 @@ public class CommunicationGUI implements CommunicationUserInterface{
 				}
 			});
 				 
-		createGroup.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e) {
-				createGroup();
-				}
-			});
+
 				 
 		 sendNewMessage.addActionListener(new ActionListener(){
 			 public void actionPerformed(ActionEvent e) {
@@ -157,7 +153,6 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		// adding all the buttons to our options panel
 		optionsPanel.add(logout);
 		optionsPanel.add(showDirectory);
-		optionsPanel.add(createGroup);
 		optionsPanel.add(sendNewMessage);
 		optionsPanel.add(viewLogs);
 
@@ -261,12 +256,13 @@ public class CommunicationGUI implements CommunicationUserInterface{
 //		
 	}
 	
-	private void createGroup() {
-		
-	}
+
 	
 	private void sendNewMessage() throws ClassNotFoundException, IOException {
+		String messageSendMessage;
 		showDirectory();
+		messageSendMessage = JOptionPane.showInputDialog("Please enter the User IDs of all the users you want to send this message to.");
+
 	}
 
 	private void viewLogs() {
