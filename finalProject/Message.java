@@ -16,11 +16,10 @@ public class Message implements Serializable{
 	Boolean isSent;
 	
 	MessageType messageType;
-	public Message(String messageString, String messageSender, String messageReceiver, MessageType messageType, ArrayList<Integer> receiverUID) {
+	public Message(String messageString, String messageSender, String messageReceiver, MessageType messageType) {
 		this.messageString = messageString;
 		this.messageSender = messageSender;
 		this.messageType = messageType;
-		messageReceiverUID = receiverUID;
 		isSent = false;
 	}
 	public Message(String messageString, String messageSender, String messageReceiver, MessageType messageType, Integer senderUID, ArrayList<Integer> receiverUID) {
