@@ -13,12 +13,18 @@ import java.util.*;
 
 public class CommunicationManager {
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, ClassNotFoundException {
 
 //		ObjectOutputStream objectOutputStream;
 //		ObjectInputStream objectInputStream;
 		
-		Client client = new Client();
+     	Client client = new Client();
+//		ArrayList<Integer> test = new ArrayList<Integer>();
+//		test.add(2);
+//		client.login("tommy", "password1");
+//		client.sendMessage("Hello", "tommy", "tommy", "1", test);
+//		client.receiveMessage();
+
 		CommunicationUserInterface CommInterface;
 		CommInterface = new CommunicationGUI(client);
 		CommInterface.processCommands();
