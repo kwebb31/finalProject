@@ -10,7 +10,6 @@ public class Message implements Serializable{
 	Date messageCreated = new Date();
 	String messageString;
 	String messageSender;
-	
 	Integer messageSenderUID;
 	ArrayList<Integer> messageReceiverUID = new ArrayList<Integer>();
 	Boolean isSent;
@@ -22,7 +21,7 @@ public class Message implements Serializable{
 		this.messageType = messageType;
 		isSent = false;
 	}
-	public Message(String messageString, String messageSender, String messageReceiver, MessageType messageType, Integer senderUID, ArrayList<Integer> receiverUID) {
+	public Message(String messageString, String messageSender, MessageType messageType, Integer senderUID, ArrayList<Integer> receiverUID) {
 		this.messageString = messageString;
 		this.messageSender = messageSender;
 		SetID();
@@ -82,7 +81,12 @@ public class Message implements Serializable{
 		return isSent;}
 	
 	public String toString() {
-		String myStr = (messageId + "," + messageSender + "," + messageString + "," + messageType + "," + messageCreated + "\n" );
+		String myStr = (messageId + "," + messageSender + "," + messageString + "," + messageType + "," + messageCreated + "," );
+		myStr = myStr + ("[");
+		for(Integer items:messageReceiverUID) {
+			myStr = myStr + (items + ";");
+		}
+		myStr = myStr + ("]");
 		return myStr;
 	}
 	

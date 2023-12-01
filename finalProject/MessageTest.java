@@ -5,7 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import java.util.*;
 class MessageTest {
-	Message myMessage = new Message("This is my message", "Kat", "Tommy", MessageType.TEXT, 01, 02);
+	ArrayList<Integer> UIDs = new ArrayList();
+	Message myMessage = new Message("This is my message", "Kat", "Tommy", MessageType.TEXT, 01, UIDs );
 	@Test
 	void testMessageStringStringStringMessageTypeInteger() {
 		fail("Not yet implemented");
@@ -15,9 +16,8 @@ class MessageTest {
 	void testMessageStringStringStringMessageTypeIntegerInteger() {
 		String myString = myMessage.getMessageString();
 		String sender = myMessage.getMessageSender();
-		String receiver = myMessage.getMessageReceiver();
 		MessageType myType = myMessage.getMessageType();
-		Integer messageRecieverUID = myMessage.getRecieverUID();
+		ArrayList<Integer> messageRecieverUID = myMessage.getRecieverUID();
 	}
 
 
