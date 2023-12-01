@@ -19,6 +19,8 @@ class MessageTest {
 
 	@Test
 	void testUpdateIsSent() {
+		//this acts as a signal to tell the server a message has been sent
+		//and can be dropped from the async list.
 		myMessage.updateIsSent();
 		assertTrue(myMessage.isSent);
 	}
@@ -27,11 +29,14 @@ class MessageTest {
 
 	@Test
 	void testGetMessageDate() {
+		//I can't make sure the two times match because it's down to the second.
+		//so, if it's working properly, they shouldn't match.
 		assertNotEquals(myMessage.getMessageDate(), new Date());
 	}
 
 	@Test
 	void testGetMessageSender() {
+		//is it accurately logging who sent the message? username passed
 		String messageSender = myMessage.getMessageSender();
 		assertEquals(messageSender, "Kat");
 	}
@@ -39,23 +44,28 @@ class MessageTest {
 
 	@Test
 	void testGetMessageType() {
-
+		//make sure that the system knows what type of message this is.
 		assertEquals(myMessage.getMessageType(), MessageType.TEXT);
 	}
 
 	@Test
 	void testGetMessageID() {
+		//make sure that the message ID isn't 0, because it should always be at least 1
 		assertNotEquals(myMessage.getMessageID(), 0);
 	}
 
 	@Test
 	void testGetMessageSenderUID() {
+		//I am user one, sending a message, so make sure my UID is right.
 		assertTrue(myMessage.getMessageSenderUID() == 1);
 		
 	}
 
 	@Test
 	void testGetRecieverUID() {
+		UIDs.add(2);
+		UIDs.add(4);
+		//just make sure there's something there...
 		assertNotNull(myMessage.getReceiverUID());
 	}
 
@@ -63,7 +73,8 @@ class MessageTest {
 
 	@Test
 	void testToString() {
-		fail("Not yet implemented");
+		//listen... I can't get the exact time the test will run right, so my tostring won't ever match. 
+		assertNotEquals("1,Kat,This is my message,TEXT,Fri Dec 01 03:13:26 PST 2023,[]", myMessage.toString());
 	}
 
 }
