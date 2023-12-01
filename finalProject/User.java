@@ -1,9 +1,14 @@
 package finalProject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class User {
+public class User implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	String userName;
 	Integer id;
 	static Integer idNumber = 0;
@@ -20,6 +25,7 @@ public class User {
 		this.userPassword = null;
 		this.userIsOnline = null;
 		this.userLoginSuccessful = null;
+		SetID();
 	}
 	// constructor using parameters
 	public User(String userName, Role userRole, String userPassword, Boolean userIsOnline, Boolean userLoginSuccessful ) {

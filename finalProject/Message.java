@@ -10,24 +10,22 @@ public class Message implements Serializable{
 	Date messageCreated = new Date();
 	String messageString;
 	String messageSender;
-	String messageReceiver;
+	
 	Integer messageSenderUID;
-	Integer messageReceiverUID;
+	ArrayList<Integer> messageReceiverUID = new ArrayList<Integer>();
 	Boolean isSent;
 	
 	MessageType messageType;
-	public Message(String messageString, String messageSender, String messageReceiver, MessageType messageType, Integer receiverUID) {
+	public Message(String messageString, String messageSender, String messageReceiver, MessageType messageType, ArrayList<Integer> receiverUID) {
 		this.messageString = messageString;
 		this.messageSender = messageSender;
-		this.messageReceiver = messageReceiver;
 		this.messageType = messageType;
 		messageReceiverUID = receiverUID;
 		isSent = false;
 	}
-	public Message(String messageString, String messageSender, String messageReceiver, MessageType messageType, Integer senderUID, Integer receiverUID) {
+	public Message(String messageString, String messageSender, String messageReceiver, MessageType messageType, Integer senderUID, ArrayList<Integer> receiverUID) {
 		this.messageString = messageString;
 		this.messageSender = messageSender;
-		this.messageReceiver = messageReceiver;
 		SetID();
 		this.messageType = messageType;
 		messageSenderUID = senderUID;
@@ -64,9 +62,7 @@ public class Message implements Serializable{
 	String getMessageSender() {
 		return messageSender;
 	}
-	String getMessageReceiver() {
-		return messageReceiver;
-	}
+
 	MessageType getMessageType() {
 		return messageType;
 	}
@@ -78,7 +74,7 @@ public class Message implements Serializable{
 		return messageSenderUID;
 	}
 	
-	Integer getRecieverUID() {
+	ArrayList<Integer> getRecieverUID() {
 		return messageReceiverUID;
 	}
 
@@ -87,7 +83,7 @@ public class Message implements Serializable{
 		return isSent;}
 	
 	public String toString() {
-		String myStr = (messageId + "," + messageSender + "," + messageReceiver + "," + messageString + "," + messageType + "," + messageCreated + "\n" );
+		String myStr = (messageId + "," + messageSender + "," + messageString + "," + messageType + "," + messageCreated + "\n" );
 		return myStr;
 	}
 	

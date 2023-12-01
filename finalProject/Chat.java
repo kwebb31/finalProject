@@ -43,6 +43,11 @@ public class Chat {
 
 	}
 
+	ArrayList<Integer> getParticipantsUID(){
+
+		return participants;
+	}
+	
 	String getParticipants() {
 		String myParticipants = "";
 		for (int i = 0; i < participants.size(); i++) 
@@ -53,6 +58,8 @@ public class Chat {
 
 		return myParticipants;
 	}
+	
+	
 	String getMessages() {
 		String myMessages = "";
 		for (int i = 0; i < messages.size(); i++) 
