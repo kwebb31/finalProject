@@ -81,13 +81,14 @@ public class Log {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM.dd.yy,HH:mm");
 		String formattedDate = dateFormat.format(messageDate);
 		//format the string to be logged
-		String messageToLog = message.getMessageSender() + "," +  message.getMessageSenderUID() + "(" + message.getMessageReceiver() + ")" 
-		+ formattedDate + "," + message.getMessageString();
+		String messageToLog = message.getMessageSender() + "," +  message.getMessageSenderUID() +  
+		 formattedDate + "," + message.getMessageString();
 		//write to file on a new line
 		//THIS IS WHERE THE FILE NAME SHOULD BE CHANGED
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter("commlogs.txt", true))){
 			writer.write(messageToLog);
 			writer.newLine();
+			writer.close();
 			System.out.println("Message logged to file successfully.");
 		}catch (IOException e) {
 			System.out.println("Error reading file: " + e.getMessage());
@@ -96,28 +97,28 @@ public class Log {
 	
 	
 	//driver for testing, THIS SHOULD BE DELETED
-	public static void main(String[] args) {
-        Log log = new Log();
-        
-        //test getAllLogs
-        System.out.println("All messages from textfile:");
-        System.out.println(log.getAllLogs());
-        
-        //test filterLogsBySender
-        System.out.println("All messages from sender JOE:\n");
-        String filteredMessages = log.filterLogsBySender("JOE");
-        System.out.println(filteredMessages);
-        
-        //test filterLogsByDate
-        System.out.println("All messages from date 11.28.23:\n");
-        String filteredDates = log.filterLogsByDate("11.28.23");
-        System.out.println(filteredDates);
-        
-        //create message object
-        Message sampleMessage = new Message("Hello, how are you?", "Alice", "Bob", MessageType.TEXT, 1001, 1002);
-        //call the addMessageFunction
-        log.addMessageToFile(sampleMessage);
-        System.out.println(log.getAllLogs());
-    }
+//	public static void main(String[] args) {
+//        Log log = new Log();
+//        
+//        //test getAllLogs
+//        System.out.println("All messages from textfile:");
+//        System.out.println(log.getAllLogs());
+//        
+//        //test filterLogsBySender
+//        System.out.println("All messages from sender JOE:\n");
+//        String filteredMessages = log.filterLogsBySender("JOE");
+//        System.out.println(filteredMessages);
+//        
+//        //test filterLogsByDate
+//        System.out.println("All messages from date 11.28.23:\n");
+//        String filteredDates = log.filterLogsByDate("11.28.23");
+//        System.out.println(filteredDates);
+//        
+//        //create message object
+//       // Message sampleMessage = new Message("Hello, how are you?", "Alice", "Bob", MessageType.TEXT, 1001, 1002);
+//        //call the addMessageFunction
+//      //  log.addMessageToFile(sampleMessage);
+//        System.out.println(log.getAllLogs());
+//    }
 
 }
