@@ -5,8 +5,12 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 
 public class Log {
-	private ArrayList<String> loggedMessagesArray = new ArrayList<String>();
+	public ArrayList<String> loggedMessagesArray = new ArrayList<String>();
 	
+	public Log(ArrayList<String> myArrayList) {
+		loggedMessagesArray = myArrayList;
+	}
+
 	public boolean isIT(User x) {
 		if (x.getRole() == Role.IT) {
 			return true;
