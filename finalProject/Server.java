@@ -14,6 +14,7 @@ public class Server {
 	private static ArrayList<User> users = new ArrayList<User>();
 	private static ArrayList<ClientHandler> clients = new ArrayList<ClientHandler>();
 	private static ArrayList<Message> asyncMessages  = new ArrayList<Message>();
+	private static ArrayList<Chat> chats = new ArrayList<Chat>();
 	static ArrayList<Socket> clientsockets;
 	private static int activeClients = 0;
 	private static ObjectOutputStream objectOutputStream;
@@ -68,7 +69,7 @@ public class Server {
 	//ClientHandler class
 	private static class ClientHandler implements Runnable{
 	    // the user using this client
-	 	private User current = null;
+	 	private User current = new User();
 		// set the input and outputs
 		//socket
 		private final Socket s;
@@ -117,7 +118,7 @@ public class Server {
 			 for (User user : users) {
 		            if (user.userName.equals(temp2[0]) && user.getPassword().equals(temp2[1])) {
 		                user.signIn();
-		                Message temp3 = new Message(user.toString(),"Server",user.userName,MessageType.LOGIN,user.id);
+		                Message temp3 = new Message(user.toString(),"Server",user.userName,MessageType.LOGIN);
 		                objectOutputStream.writeObject(temp3);
 		                current = user;
 		                System.out.println("Login Success");
@@ -127,7 +128,7 @@ public class Server {
 		            }
 		        }
 			 if(success == false) {
-				 Message temp3 = new Message("Unsuccessful","Server","Unknown User",MessageType.LOGIN,0);
+				 Message temp3 = new Message("Unsuccessful","Server","Unknown User",MessageType.LOGIN);
 	                objectOutputStream.writeObject(temp3);
 			 }
 			 
@@ -137,11 +138,13 @@ public class Server {
 		private void sendSynchronousMessage(Message message) throws IOException {
 		    boolean recipientFound = false;
 		    for (ClientHandler client : clients) {
-		         if(client.current.userName.equals(message.messageReceiver)) {
+		    	for(int s : message.messageReceiverUID){
+		         if(client.current.id == s) {
 		        	 recipientFound = true;
 		        	 client.getObjectOutputStream().writeObject(message);
 		        	 break;
 		         }
+		    	}
 		    }
 		    if(recipientFound == false) {
 		    	//write this message to the file and arraylist associated with async messages
@@ -152,30 +155,40 @@ public class Server {
 		// add the message to an arraylist that will be held by server until users are online
 		void offlineMessage(Message message) throws IOException{
 			asyncMessages.add(message);
-			FileWriter writer = new FileWriter("asyncMessages.csv" , true);
-			writer.write(message.toString());
+			FileOutputStream writer = new FileOutputStream(new File("asyncMessages.csv"));
+			ObjectOutputStream w = new ObjectOutputStream(writer);
+			w.writeObject(message);
 			writer.close();
+			w.close();
 		}
 		
 		// load the messages from file to arraylist on server start
-		void loadAsyncMessages() throws IOException {
+		void loadAsyncMessages() throws IOException, ClassNotFoundException {
 			try {
-				Scanner reader = new Scanner(new FileReader("asyncMessages.csv"));
-				String line = reader.nextLine();
-				while(line != null) {
-					String[] getMessageAlone = line.split("\n");
-					for(String message : getMessageAlone) {
-						String[] parse = line.split(",");
-						Message temp = new Message(parse[3], parse[1],parse[2],MessageType.valueOf(parse[4]),Integer.parseInt(parse[6],Integer.parseInt(parse[7])));
-						temp.setMessageDate(Date.valueOf(parse[5]));
-						asyncMessages.add(temp);
-						
-					}
-					line = reader.nextLine();
+				FileInputStream reader = new FileInputStream(new File("asyncMessages.csv"));
+				ObjectInputStream r = new ObjectInputStream(reader);
+				while(r.readObject() != null) {
+					Message line = (Message) r.readObject();
+					asyncMessages.add(line);
 				}
-			}catch(FileNotFoundException e ){
-				
-			}
+				reader.close();
+				r.close();
+
+//				while(line != null) {
+//					String[] getMessageAlone = line.split("\n");
+//					for(String message : getMessageAlone) {
+//						String[] parse = line.split(",");
+//						Message temp = new Message(parse[3], parse[1],parse[2],MessageType.valueOf(parse[4]),Integer.parseInt(parse[6]),parse[7]);
+//						temp.setMessageDate(Date.valueOf(parse[5]));
+//						asyncMessages.add(temp);
+//						
+//					}
+//					line = reader.nextLine();
+//				}
+			}catch (EOFException e)
+				{
+				    // end of stream
+				}
 		}
 		// load the messages from file to arraylist on server start
 		/*
@@ -193,18 +206,23 @@ public class Server {
 		// check to send messages to users that have logged in.
 		void sendAsynchronousMessage() throws IOException {
 			for(Message msg : asyncMessages) {
-				if(msg.messageReceiverUID == current.id && current.userIsOnline == true) {
-					objectOutputStream.writeObject(msg);
-					if(msg.messageReceiverUID == current.id) {
-						asyncMessages.remove(msg);
+				for(int s : msg.messageReceiverUID) {
+					if(s == current.id && current.userIsOnline == true) {
+						objectOutputStream.writeObject(msg);
+						if(s == current.id) {
+							asyncMessages.remove(msg);
+						}
 					}
 				}
+
 			}
-			FileWriter writer = new FileWriter("asyncMessages.csv", true);
-			for(Message msg : asyncMessages) {
-				writer.write(msg.toString());
+			FileOutputStream writer = new FileOutputStream(new File("asyncMessages.csv"));
+			ObjectOutputStream w = new ObjectOutputStream(writer); 
+			for(Message msg : asyncMessages) {		
+				w.writeObject(msg);
 			}
 			writer.close();
+			w.close();
 		}
 		
 		// logout method, receives a message object with MessageType logout and then signs the user out and clears the instance of user in this client
@@ -214,7 +232,7 @@ public class Server {
 			 for (User user : users) {
 		            if (user.userName.equals(temp2[0]) && user.getPassword().equals(temp2[1])) {
 		                user.signOut();
-		                Message temp3 = new Message("Success","Server",user.userName,MessageType.LOGIN,user.id);
+		                Message temp3 = new Message("Success","Server",user.userName,MessageType.LOGOUT);
 		                objectOutputStream.writeObject(temp3);
 		                current = new User();
 		                System.out.println("Logout Success");
@@ -233,8 +251,12 @@ public class Server {
 				userDirectories+= users.get(i).getUserName() + "\n";
 			}
 			
-			Message userDirectoryListMessage = new Message(userDirectories, "Server", "Client", MessageType.DIRECTORY, 0);
+			Message userDirectoryListMessage = new Message(userDirectories, "Server", "Client", MessageType.DIRECTORY);
 			objectOutputStream.writeObject(userDirectoryListMessage);
+		}
+		
+		void getUserChats() {
+			
 		}
 	}
 }
