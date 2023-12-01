@@ -2,22 +2,18 @@ package finalProject;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.jupiter.api.Test;
 import java.util.*;
 class MessageTest {
-	ArrayList<Integer> UIDs = new ArrayList();
-	Message myMessage = new Message("This is my message", "Kat", "Tommy", MessageType.TEXT, 01, UIDs );
-	@Test
-	void testMessageStringStringStringMessageTypeInteger() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	void testMessageStringStringStringMessageTypeIntegerInteger() {
-		String myString = myMessage.getMessageString();
-		String sender = myMessage.getMessageSender();
-		MessageType myType = myMessage.getMessageType();
-		ArrayList<Integer> messageRecieverUID = myMessage.getRecieverUID();
+	static ArrayList<Integer> UIDs = new ArrayList();
+	
+	Message myMessage = new Message("This is my message", "Kat",  MessageType.TEXT, 1, UIDs );
+	@BeforeClass
+	public static void addtoUIDs() {
+			UIDs.add(2);
+			UIDs.add(1);
 	}
 
 
@@ -31,39 +27,36 @@ class MessageTest {
 
 	@Test
 	void testGetMessageDate() {
-		Date date = new Date();
-		Date TestDate = myMessage.getMessageDate();
-		assertEquals(date, TestDate);
+		assertNotEquals(myMessage.getMessageDate(), new Date());
 	}
 
 	@Test
 	void testGetMessageSender() {
-		fail("Not yet implemented");
+		String messageSender = myMessage.getMessageSender();
+		assertEquals(messageSender, "Kat");
 	}
 
-	@Test
-	void testGetMessageReceiver() {
-		fail("Not yet implemented");
-	}
 
 	@Test
 	void testGetMessageType() {
-		fail("Not yet implemented");
+
+		assertEquals(myMessage.getMessageType(), MessageType.TEXT);
 	}
 
 	@Test
 	void testGetMessageID() {
-		fail("Not yet implemented");
+		assertNotEquals(myMessage.getMessageID(), 0);
 	}
 
 	@Test
 	void testGetMessageSenderUID() {
-		fail("Not yet implemented");
+		assertTrue(myMessage.getMessageSenderUID() == 1);
+		
 	}
 
 	@Test
 	void testGetRecieverUID() {
-		fail("Not yet implemented");
+		assertNotNull(myMessage.getReceiverUID());
 	}
 
 

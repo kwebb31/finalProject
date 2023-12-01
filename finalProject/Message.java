@@ -72,7 +72,7 @@ public class Message implements Serializable{
 		return messageSenderUID;
 	}
 	
-	ArrayList<Integer> getRecieverUID() {
+	ArrayList<Integer> getReceiverUID() {
 		return messageReceiverUID;
 	}
 
