@@ -5,21 +5,38 @@ import java.util.*;
 //note: This might be easier if we just pass an ArrayList with just the UIDs instead of whole user profiles
 //since it doesn't matter if they're IT users or 
 public class Chat {
-	ArrayList<Message>messages = new ArrayList();
+	
 	ArrayList<Integer>participants = new ArrayList();
 	static Integer chatRoomID = 0;
 	
-	
-	
-	
-	void chat(ArrayList<Message>newMessages, ArrayList<Integer>newParticipants ) {
+
+
+	public Chat(ArrayList<Integer> newParticipants) {
 		SetID();
-		Message myMessage;
+		//Message myMessage;
 		Integer myInt;
-		for (int i = 0; i < newMessages.size(); i++) {
-			 myMessage = newMessages.get(i);
-			 messages.add(myMessage);
+		//for (int i = 0; i < newMessages.size(); i++) {
+		//	 myMessage = newMessages.get(i);
+		//	 messages.add(myMessage);
+		//}
+		
+		for (int i = 0; i < newParticipants.size(); i++) { 
+            
+            // concatenates the text of existing messages into one long string
+           myInt =  newParticipants.get(i); 
+           participants.add(myInt);
 		}
+		}
+	
+
+	public void chat( ArrayList<Integer>newParticipants ) {
+		SetID();
+		//Message myMessage;
+		Integer myInt;
+		//for (int i = 0; i < newMessages.size(); i++) {
+		//	 myMessage = newMessages.get(i);
+		//	 messages.add(myMessage);
+		//}
 		
 		for (int i = 0; i < newParticipants.size(); i++) { 
             
@@ -31,15 +48,6 @@ public class Chat {
 	
 	private void SetID() {
 		chatRoomID++;
-
-	}
-	void sendMessage(String Sender, ArrayList<Integer>participants) {
-		
-	}
-	Message recieveMessage(Message newMessage) {
-		messages.add(newMessage);
-	
-		return newMessage;
 
 	}
 
@@ -60,16 +68,16 @@ public class Chat {
 	}
 	
 	
-	String getMessages() {
-		String myMessages = "";
-		for (int i = 0; i < messages.size(); i++) 
+	//String getMessages() {
+	//	String myMessages = "";
+		//for (int i = 0; i < messages.size(); i++) 
             
             // concatenates the text of existing messages into one long string
-           myMessages = myMessages.concat(String.valueOf((messages.get(i).getMessageString())) + " "); 
+       //    myMessages = myMessages.concat(String.valueOf((messages.get(i).getMessageString())) + " "); 
 		
 
-		return myMessages;
-	}
+	//	return myMessages;
+	//}
 	String StringChatroomID() {
 		String myString;
 		myString = Integer.toString(chatRoomID);
