@@ -1,14 +1,15 @@
 package finalProject;
 
-import javax.swing.*;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.awt.event.*;
+
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -16,31 +17,29 @@ import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 
 public class CommunicationGUI implements CommunicationUserInterface{
 	
 	private String username;
 	private String password;
-	private String MessageInputMessage;
 	private Client client;
 	private JFrame frame;
 	private JPanel optionsPanel;
 	JButton logout;
 	JButton showDirectory;
-	
+	JButton createGroup;
 	JButton sendNewMessage;
 	JButton viewLogs;
 	JFrame directoryFrame;
 	private int counter;
-
+	private JList jlistUsers;
 	private JPanel listPanel;
 	private DefaultListModel<String> chats;
 	private JList jlistchats;
 	private JList jlistDirectory;
 	private JPanel overallPanel;
 	private DefaultListModel<String> userList;
+	private String MessageInputMessage;
 		
 	
 	public CommunicationGUI(Client client) {
@@ -206,19 +205,34 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		newOptionsPanel.setLayout(new FlowLayout());
 		
 		JButton sendMessage = new JButton("Send Message");
+		sendMessage.setEnabled(false);
 //		sendMessage.setPreferredSize(new Dimension(20,20));
 		newOptionsPanel.add(sendMessage);
 		
-		String userDirectory = client.getUserDirectory();
-		JTextArea jTextArea = new JTextArea(userDirectory);
-		
-		newDirectoryPanel.add(jTextArea);
+		String temp = client.getUserDirectory();
+		String[] userDirectory = temp.split("\n");
+
+//		String[] userDirectory = {"Vansh", "Tommy", "Katt", "John"};
 		
 		userList = new DefaultListModel();
 		
+		for(int i = 0; i < userDirectory.length; i++) {
+			userList.addElement(userDirectory[i]);
+		}
 		
 		
+		jlistUsers = new JList(userList);
+		newDirectoryPanel.add(jlistUsers);
 		
+		MouseListener mouseListener = new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if(e.getClickCount() == 1) {
+					sendMessage.setEnabled(true);
+				}
+			}
+		};
+		
+		jlistUsers.addMouseListener(mouseListener);
 		
 		
 		sendMessage.addActionListener(new ActionListener() {
