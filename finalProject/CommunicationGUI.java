@@ -1,5 +1,7 @@
 package finalProject;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -11,7 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.awt.event.*;
 
-
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -73,6 +75,7 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		
 //		setDisplayPanels();
 //		
+		
 		try {
 			if(client.login(username, password)) {
 				setDisplayPanels();
@@ -134,7 +137,7 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		showDirectory.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				try {
-					showDirectory();
+					showDirectoryPanel();
 				} catch (ClassNotFoundException | IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -257,7 +260,7 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		
 		for(int i = 0; i < userDirectory.length; i++) {
 			String[] parse = userDirectory[i].split(",");
-			userList.addElement(parse[1] + " - " + parse[2]);
+			userList.addElement(parse[1]);
 		}
 		
 		
@@ -286,15 +289,6 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		directoryFrame.setVisible(true);
 		
 		
-		
-		
-		
-		
-//		directoryFrame.getContentPane().add(directoryOverviewPanel);
-//		directoryFrame.setSize(800,600);
-//		directoryFrame.setLocationRelativeTo(null);
-//		directoryFrame.setVisible(true);
-//		
 	}
 	
 
@@ -426,6 +420,78 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		groupFrame.setVisible(true);
 		
 		
+	}
+	
+	private class CustomListCellRenderer extends DefaultListCellRenderer {
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+                boolean cellHasFocus) {
+            Component renderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+            // Customize the text color based on the condition
+            String text = value.toString();
+            if (text.contains("ONLINE")) {
+                renderer.setForeground(new Color(0,200,0));
+            } else {
+                renderer.setForeground(Color.RED);
+            }
+
+            return renderer;
+        }
+	}
+	
+	private void showDirectoryPanel() throws ClassNotFoundException, IOException {
+		directoryFrame = new JFrame();
+//		directoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		JPanel directoryPanel = new JPanel();
+		directoryPanel.setLayout(new GridLayout());
+		
+		JPanel newDirectoryPanel = new JPanel();
+		newDirectoryPanel.setLayout(new GridLayout());
+		
+		JPanel newOptionsPanel = new JPanel();
+		newOptionsPanel.setLayout(new FlowLayout());
+		
+		JButton refresh = new JButton("Refresh");
+		refresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				directoryFrame.dispose();
+				try {
+					showDirectoryPanel();
+				} catch (ClassNotFoundException | IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+				
+		String temp = client.getUserDirectory();
+		userDirectory = temp.split("\n");
+
+		
+		userList = new DefaultListModel();
+		
+		for(int i = 0; i < userDirectory.length; i++) {
+			String[] parse = userDirectory[i].split(",");
+			userList.addElement(parse[1] + " - " + parse[2]);
+		}
+		
+		
+		jlistUsers = new JList(userList);
+		jlistUsers.setCellRenderer(new CustomListCellRenderer());
+		newDirectoryPanel.add(jlistUsers);
+		newOptionsPanel.add(refresh);
+		directoryPanel.add(newOptionsPanel);
+		directoryPanel.add(newDirectoryPanel);
+
+		
+
+		directoryFrame.getRootPane().setDefaultButton(refresh);		
+		directoryFrame.getContentPane().add(directoryPanel);
+		directoryFrame.setSize(400,600);
+		directoryFrame.setLocationRelativeTo(null);
+		directoryFrame.setVisible(true);
 	}
 
 }
