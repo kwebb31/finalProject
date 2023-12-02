@@ -25,6 +25,7 @@ public class CommunicationGUI implements CommunicationUserInterface{
 	private String password;
 	private Client client;
 	private JFrame frame;
+	private JFrame groupFrame;
 	private JPanel optionsPanel;
 	JButton logout;
 	JButton showDirectory;
@@ -42,14 +43,20 @@ public class CommunicationGUI implements CommunicationUserInterface{
 	private DefaultListModel<String> userList;
 	private String MessageInputMessage;
 	private int indexClicked = -1;
-	private String[] userDirectory;
+//	private String[] userDirectory = {"1,TOMMY,ONLINE", "2,VANSH,OFFLINE", "3,TOMMY1,ONLINE"};	
+	private String [] userDirectory;
+	boolean added = false;
+	JList jlistSelectedUsers;
+	ArrayList<Integer> receiversID;
 
 		
 	
 	public CommunicationGUI(Client client) {
 		this.client = client;
 		this.counter = 0;
+		this.receiversID = new ArrayList<Integer>();
 	}
+	
 
 	public void processCommands() {
 		if(counter == 0) {
@@ -64,25 +71,25 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		}
 		
 		
-		setDisplayPanels();
+//		setDisplayPanels();
 //		
-//		try {
-//			if(client.login(username, password)) {
-//				setDisplayPanels();
-//			}
-//			
-//			else {
-//				counter++;
-//				processCommands();
-//			}
-//			
-//		} catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		try {
+			if(client.login(username, password)) {
+				setDisplayPanels();
+			}
+			
+			else {
+				counter++;
+				processCommands();
+			}
+			
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	
@@ -150,7 +157,12 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		 
 		 createGroup.addActionListener(new ActionListener(){
 			 public void actionPerformed(ActionEvent e) {
-				 createGroup();
+				 try {
+					createGroup();
+				} catch (ClassNotFoundException | IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				 }
 			 });
 				 
@@ -206,6 +218,7 @@ public class CommunicationGUI implements CommunicationUserInterface{
 	}
 	
 	private void showDirectory() throws ClassNotFoundException, IOException {
+		receiversID.clear();
 		directoryFrame = new JFrame();
 //		directoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -222,7 +235,15 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		sendMessage.setEnabled(false);
 		sendMessage.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				sendNewMessageToUser();
+				receiversID.add(Integer.parseInt(userDirectory[indexClicked].split(",")[0]));
+				System.out.println(receiversID.toString());
+
+				try {
+					sendNewMessageToUser();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 //		sendMessage.setPreferredSize(new Dimension(20,20));
@@ -282,17 +303,128 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		showDirectory();
 	}
 	
-	private void sendNewMessageToUser() {
-		String messageToBeSent = JOptionPane.showInputDialog("Enter message you want to send to " + userDirectory[indexClicked]);
-		ArrayList<Integer> receiverIDs;
-//		client.sendMessage(messageToBeSent, username, userDirectory[indexClicked], client.user.getID(), receiverIDs);
+	private void sendNewMessageToUser() throws IOException {
+		String inputBox = "Enter message you want to send to ";
+		if(receiversID.size() > 1) {
+			inputBox += "this Group";
+		}
+		else {
+			inputBox += userDirectory[indexClicked].split(",")[1];
+		}
+		String messageToBeSent = JOptionPane.showInputDialog(inputBox);
+		client.sendMessage(messageToBeSent, username, userDirectory[indexClicked], client.user.getID().toString(), receiversID);
 	}
 
 	private void viewLogs() {
 	
 	}
 	
-	private void createGroup() {
+	private void createGroup() throws ClassNotFoundException, IOException {
+		
+		receiversID.clear();
+		
+		added = false;
+		
+		groupFrame = new JFrame();
+//		directoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		JPanel groupOverviewPanel = new JPanel();
+		groupOverviewPanel.setLayout(new GridLayout());
+		
+		JPanel newDirectoryPanel = new JPanel();
+		newDirectoryPanel.setLayout(new GridLayout());
+		
+		JPanel selectedUserPanel = new JPanel();
+		selectedUserPanel.setLayout(new GridLayout());
+		
+		JPanel newOptionsPanel = new JPanel();
+		newOptionsPanel.setLayout(new FlowLayout());
+		
+		JButton sendMessage = new JButton("Send Message");
+		sendMessage.setEnabled(false);
+		sendMessage.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				receiversID.sort(null);
+				System.out.println(receiversID.toString());
+				try {
+					sendNewMessageToUser();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+//		sendMessage.setPreferredSize(new Dimension(20,20));
+		newOptionsPanel.add(sendMessage);
+		
+		DefaultListModel<String> selectedUserList = new DefaultListModel();
+		
+		JButton addPerson = new JButton("Add Person to Group");
+		addPerson.setEnabled(false);
+		
+
+		addPerson.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				for(int i = 0; i < selectedUserList.getSize(); i++) {
+					if(selectedUserList.elementAt(i).toString().equals(userDirectory[indexClicked].split(",")[1])) {
+						added = true;
+					}
+				}
+				
+				if(added == false) {
+					selectedUserList.addElement(userDirectory[indexClicked].split(",")[1]);
+					receiversID.add(Integer.parseInt(userDirectory[indexClicked].split(",")[0]));
+					sendMessage.setEnabled(true);
+				}
+				
+				added = false;
+				addPerson.setEnabled(false);
+			}
+		});
+//		sendMessage.setPreferredSize(new Dimension(20,20));
+		newOptionsPanel.add(addPerson);
+		
+		String temp = client.getUserDirectory();
+		userDirectory = temp.split("\n");
+		
+		userList = new DefaultListModel();
+		
+		for(int i = 0; i < userDirectory.length; i++) {
+			String[] parse = userDirectory[i].split(",");
+			userList.addElement(parse[1]);
+		}
+		
+		
+		jlistUsers = new JList(userList);
+		newDirectoryPanel.add(jlistUsers);
+		
+		jlistSelectedUsers = new JList(selectedUserList);
+		selectedUserPanel.add(jlistSelectedUsers);
+		
+		MouseListener mouseListener = new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if(e.getClickCount() == 1) {
+					addPerson.setEnabled(true);
+					indexClicked = jlistUsers.locationToIndex(e.getPoint());
+				}
+			}
+		};
+		
+		jlistUsers.addMouseListener(mouseListener);
+		
+		
+		groupOverviewPanel.add(newOptionsPanel);
+		groupOverviewPanel.add(newDirectoryPanel);
+		groupOverviewPanel.add(selectedUserPanel);
+
+
+		
+		groupFrame.getRootPane().setDefaultButton(sendMessage);		
+		groupFrame.getContentPane().add(groupOverviewPanel);
+		groupFrame.setSize(600,600);
+		groupFrame.setLocationRelativeTo(null);
+		groupFrame.setVisible(true);
+		
 		
 	}
 
