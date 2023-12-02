@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.awt.event.*;
 
 
@@ -40,6 +41,9 @@ public class CommunicationGUI implements CommunicationUserInterface{
 	private JPanel overallPanel;
 	private DefaultListModel<String> userList;
 	private String MessageInputMessage;
+	private int indexClicked = -1;
+	private String[] userDirectory;
+
 		
 	
 	public CommunicationGUI(Client client) {
@@ -60,25 +64,25 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		}
 		
 		
-//		setDisplayPanels();
-		
-		try {
-			if(client.login(username, password)) {
-				setDisplayPanels();
-			}
-			
-			else {
-				counter++;
-				processCommands();
-			}
-			
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		setDisplayPanels();
+//		
+//		try {
+//			if(client.login(username, password)) {
+//				setDisplayPanels();
+//			}
+//			
+//			else {
+//				counter++;
+//				processCommands();
+//			}
+//			
+//		} catch (ClassNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 	}
 	
@@ -98,6 +102,7 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		logout = new JButton("Logout");
 		showDirectory = new JButton("Show Directory");
 		sendNewMessage = new JButton("Create a new chat");
+		createGroup = new JButton("Create a group");
 		viewLogs = new JButton("View Logs");
 		
 		frame.getRootPane().setDefaultButton(logout);
@@ -142,6 +147,12 @@ public class CommunicationGUI implements CommunicationUserInterface{
 				}
 				 }
 			 });
+		 
+		 createGroup.addActionListener(new ActionListener(){
+			 public void actionPerformed(ActionEvent e) {
+				 createGroup();
+				 }
+			 });
 				 
 		viewLogs.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -153,7 +164,10 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		optionsPanel.add(logout);
 		optionsPanel.add(showDirectory);
 		optionsPanel.add(sendNewMessage);
-		optionsPanel.add(viewLogs);
+		optionsPanel.add(createGroup);
+		if(client.user.getRole() == Role.IT) {
+			optionsPanel.add(viewLogs);
+		}
 
 		
 		
@@ -193,7 +207,7 @@ public class CommunicationGUI implements CommunicationUserInterface{
 	
 	private void showDirectory() throws ClassNotFoundException, IOException {
 		directoryFrame = new JFrame();
-		directoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		directoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel directoryOverviewPanel = new JPanel();
 		directoryOverviewPanel.setLayout(new GridLayout());
@@ -206,18 +220,23 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		
 		JButton sendMessage = new JButton("Send Message");
 		sendMessage.setEnabled(false);
+		sendMessage.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				sendNewMessageToUser();
+			}
+		});
 //		sendMessage.setPreferredSize(new Dimension(20,20));
 		newOptionsPanel.add(sendMessage);
 		
 		String temp = client.getUserDirectory();
-		String[] userDirectory = temp.split("\n");
+		userDirectory = temp.split("\n");
 
-//		String[] userDirectory = {"Vansh", "Tommy", "Katt", "John"};
 		
 		userList = new DefaultListModel();
 		
 		for(int i = 0; i < userDirectory.length; i++) {
-			userList.addElement(userDirectory[i]);
+			String[] parse = userDirectory[i].split(",");
+			userList.addElement(parse[1] + " - " + parse[2]);
 		}
 		
 		
@@ -228,26 +247,13 @@ public class CommunicationGUI implements CommunicationUserInterface{
 			public void mouseClicked(MouseEvent e) {
 				if(e.getClickCount() == 1) {
 					sendMessage.setEnabled(true);
+					indexClicked = jlistUsers.locationToIndex(e.getPoint());
 				}
 			}
 		};
 		
 		jlistUsers.addMouseListener(mouseListener);
 		
-		
-		sendMessage.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					sendNewMessage();
-				} catch (ClassNotFoundException | IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
-		
-//		jlistDirectory = new JList();
-//		newDirectoryPanel.add(jlistDirectory);
 		
 		directoryOverviewPanel.add(newOptionsPanel);
 		directoryOverviewPanel.add(newDirectoryPanel);
@@ -273,14 +279,21 @@ public class CommunicationGUI implements CommunicationUserInterface{
 
 	
 	private void sendNewMessage() throws ClassNotFoundException, IOException {
-		String messageSendMessage;
 		showDirectory();
-		messageSendMessage = JOptionPane.showInputDialog("Please enter the User IDs of all the users you want to send this message to.");
-
+	}
+	
+	private void sendNewMessageToUser() {
+		String messageToBeSent = JOptionPane.showInputDialog("Enter message you want to send to " + userDirectory[indexClicked]);
+		ArrayList<Integer> receiverIDs;
+//		client.sendMessage(messageToBeSent, username, userDirectory[indexClicked], client.user.getID(), receiverIDs);
 	}
 
 	private void viewLogs() {
 	
+	}
+	
+	private void createGroup() {
+		
 	}
 
 }

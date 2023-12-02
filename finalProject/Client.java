@@ -13,7 +13,7 @@ import finalProject.Message;
 
 
 public class Client {
-	private User user = new User();
+	protected User user = new User();
 	public boolean isLoggedIn;
 	private boolean isConnected;
 	private String host = "localhost";
@@ -111,10 +111,13 @@ public class Client {
 	}
 	
 	public String getUserDirectory() throws IOException, ClassNotFoundException {
-		//System.out.println("login request sending");
+		System.out.println("login request sending");
 		Message userDirectory =  new Message(user.getUserName(), user.getUserName(), "Server",MessageType.DIRECTORY);
 		objectOutputStream.writeObject(userDirectory);
 		userDirectory = (Message) objectInputStream.readObject();
+		
+//		String userDirectory = "1,Vansh,OFFLINE\n2,tommy,ONLINE\n3,kat,OFFLINE";
 		return userDirectory.getMessageString();
+//		return userDirectory;
 	}
 }

@@ -276,7 +276,15 @@ public class Server {
 					continue;
 				}
 				
-				userDirectories+= (users.get(i).getUserName() + "\n");
+				userDirectories+= users.get(i).getID() + "," + users.get(i).getUserName() + ",";
+				if(users.get(i).getOnlineStatus() == true) {
+					userDirectories+= "ONLINE \n" ;
+				}
+				else {
+					userDirectories+= "OFFLINE \n";
+				}
+					
+				
 			}
 			
 			Message userDirectoryListMessage = new Message(userDirectories, "Server", "Client", MessageType.DIRECTORY);
