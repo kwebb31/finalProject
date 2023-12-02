@@ -4,15 +4,17 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.StreamCorruptedException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import finalProject.Message;
 
 
 public class Client {
 	private User user = new User();
-	private boolean isLoggedIn;
+	public boolean isLoggedIn;
 	private boolean isConnected;
 	private String host = "localhost";
 	private int port = 1234;
@@ -20,6 +22,7 @@ public class Client {
 	private ObjectOutputStream objectOutputStream;
 	private ObjectInputStream objectInputStream;
 	private int loginAttempt = 0;
+	private Log log = new Log();
 
 	public Client(){
 		try {
@@ -53,18 +56,48 @@ public class Client {
 		System.out.println("Login Success!");
 		return isLoggedIn;
 	}
-	public void sendMessage(String msg, String sender, String receiver, String senderUID, ArrayList<Integer> receiverUID ) throws IOException {
-			System.out.println("Hello from send message");
-			Message Temp = new Message(msg, sender, receiver, MessageType.TEXT, Integer.parseInt(senderUID) ,receiverUID);
+	public synchronized void sendMessage(String msg, String sender, String receiver, String senderUID, ArrayList<Integer> receiverUID ) throws IOException {
+			Message Temp = new Message(msg, sender, MessageType.TEXT, Integer.parseInt(senderUID) ,receiverUID);
 			objectOutputStream.writeObject(Temp);
-		
+			objectOutputStream.flush();
+			
 	}
-	public void receiveMessage() throws ClassNotFoundException, IOException {
-		System.out.println("Hello from receive msg");
-		Message Temp = (Message) objectInputStream.readObject();
-		System.out.println(Temp.toString());
+	public synchronized void receiveMessage() throws IOException {
+	    System.out.println("Hello from receive msg");
+	    try {
+	        if (objectInputStream == null) {
+	            System.out.println("ObjectInputStream is null. Check your initialization.");
+	            return;
+	        }
+	        System.out.println("Before readObject");
+	        
+	        Message temp = (Message) objectInputStream.readObject();
+	        System.out.println("After readObject");
+	        System.out.println(temp.toString());
+	        System.out.println("after tostring");
+	    } catch (Exception e) {
+	        // Print the stack trace for debugging
+	        e.printStackTrace();
+	        // Reset the stream to handle any cached objects
+	        //objectInputStream.reset();
+	    }
 	}
-	public Boolean logout() throws IOException, ClassNotFoundException {
+
+	public String viewLog(String s) {
+		if(s == "all") {
+			return log.getAllLogs();
+		}
+		else if(s.contains(".")) {
+			return log.filterLogsByDate(s);
+		}
+		else {
+			return log.filterLogsBySender(s);
+		}
+	}	
+
+
+	
+	public synchronized Boolean logout() throws IOException, ClassNotFoundException {
 		Message Temp = new Message("",user.userName,"Server",MessageType.LOGOUT);
 		objectOutputStream.writeObject(Temp);
 		Temp = (Message) objectInputStream.readObject();

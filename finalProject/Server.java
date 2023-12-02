@@ -6,6 +6,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
+import finalProject.Message;
 
 
 public class Server {
@@ -19,6 +20,7 @@ public class Server {
 	private static int activeClients = 0;
 	private static ObjectOutputStream objectOutputStream;
 	private static ObjectInputStream objectInputStream;
+	private static Log log = new Log();
 	//private static Log = new Log();
 	
 	public static void main(String[] args) {
@@ -93,7 +95,8 @@ public class Server {
 						 break;
 					 }
 					 else if(temp.getMessageType().equals(MessageType.TEXT)) {
-						 sendSynchronousMessage(temp);
+						 System.out.println("Sending message...");
+						 sendSynchronousMessage(temp, objectOutputStream);
 					 }
 					 else if(temp.getMessageType().equals(MessageType.DIRECTORY)) {
 						 getUserDirectory(temp);
@@ -103,7 +106,6 @@ public class Server {
 			 } catch(IOException e) {	 
 			 } catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 		}
 		//getter to retrieve the OutputStream for the client we want to work with
@@ -135,17 +137,35 @@ public class Server {
 			 
 		}
 		// Send the message to the designated client and user
-		private void sendSynchronousMessage(Message message) throws IOException {
+		private void sendSynchronousMessage(Message message, ObjectOutputStream os) throws IOException {
 		    boolean recipientFound = false;
+		    System.out.println("the contents of message that is passed to sync msg:");
+		    System.out.println(message.toString());
 		    for (ClientHandler client : clients) {
 		    	for(int s : message.messageReceiverUID){
-		         if(client.current.id == s) {
-		        	 recipientFound = true;
-		        	 client.getObjectOutputStream().writeObject(message);
-		        	 break;
+		    		if(client.current.id == s) {
+				        	 recipientFound = true;
+				        	 try {
+	                    // Flush the ObjectOutputStream to ensure that all data is sent
+				        		 //ObjectOutputStream os = client.getObjectOutputStream();
+//				        		 client.getObjectOutputStream().writeObject(message);
+				        		 os.writeObject(message);
+				        		 System.out.println("message sent?");
+//				        		 client.getObjectOutputStream().flush();
+//				        		 client.getObjectOutputStream().reset();
+				        		 os.flush();
+				        		 os.reset();
+				        		 log.addMessageToFile(message);
+				        		 break;
+				        	 	}catch (StreamCorruptedException e) {
+				        	 		// Print the stack trace for debugging
+				        	 		e.printStackTrace();
+				        	 		// Handle or log the exception as needed
+				        	 	}
+		    		  }
 		         }
-		    	}
 		    }
+		    
 		    if(recipientFound == false) {
 		    	//write this message to the file and arraylist associated with async messages
 		    	offlineMessage(message);
@@ -155,7 +175,8 @@ public class Server {
 		// add the message to an arraylist that will be held by server until users are online
 		void offlineMessage(Message message) throws IOException{
 			asyncMessages.add(message);
-			FileOutputStream writer = new FileOutputStream(new File("asyncMessages.csv"));
+			
+			FileOutputStream writer = new FileOutputStream(new File("asyncMessages.txt"));
 			ObjectOutputStream w = new ObjectOutputStream(writer);
 			w.writeObject(message);
 			writer.close();
@@ -165,7 +186,7 @@ public class Server {
 		// load the messages from file to arraylist on server start
 		void loadAsyncMessages() throws IOException, ClassNotFoundException {
 			try {
-				FileInputStream reader = new FileInputStream(new File("asyncMessages.csv"));
+				FileInputStream reader = new FileInputStream(new File("asyncMessages.txt"));
 				ObjectInputStream r = new ObjectInputStream(reader);
 				while(r.readObject() != null) {
 					Message line = (Message) r.readObject();
@@ -208,7 +229,9 @@ public class Server {
 			for(Message msg : asyncMessages) {
 				for(int s : msg.messageReceiverUID) {
 					if(s == current.id && current.userIsOnline == true) {
+						log.addMessageToFile(msg);
 						objectOutputStream.writeObject(msg);
+						objectOutputStream.flush();
 						if(s == current.id) {
 							asyncMessages.remove(msg);
 						}
@@ -216,13 +239,18 @@ public class Server {
 				}
 
 			}
-			FileOutputStream writer = new FileOutputStream(new File("asyncMessages.csv"));
-			ObjectOutputStream w = new ObjectOutputStream(writer); 
-			for(Message msg : asyncMessages) {		
-				w.writeObject(msg);
+			try {
+				FileOutputStream writer = new FileOutputStream(new File("asyncMessages.txt"));
+				ObjectOutputStream w = new ObjectOutputStream(writer); 
+				for(Message msg : asyncMessages) {		
+					w.writeObject(msg);
+				}
+				writer.close();
+				w.close();
+			}catch(EOFException e) {
+				
 			}
-			writer.close();
-			w.close();
+
 		}
 		
 		// logout method, receives a message object with MessageType logout and then signs the user out and clears the instance of user in this client

@@ -6,10 +6,10 @@ import java.text.SimpleDateFormat;
 
 public class Log {
 	public ArrayList<String> loggedMessagesArray = new ArrayList<String>();
-	
+	/*
 	public Log(ArrayList<String> myArrayList) {
 		loggedMessagesArray = myArrayList;
-	}
+	*/
 
 	public boolean isIT(User x) {
 		if (x.getRole() == Role.IT) {
@@ -47,6 +47,7 @@ public class Log {
 	//method that returns string of all logged messages with sender "x", separated by "\n"
 	public String filterLogsBySender(String x) {
 		//StringBuilder class, allows for a mutable sequence of characters
+		updateLoggedMessageArray();
 		StringBuilder filteredLoggedMessages = new StringBuilder();
 		
 		for (String loggedMessage : loggedMessagesArray) {
@@ -63,11 +64,12 @@ public class Log {
 	
 	//String date format is expected to be in "MM.dd.yy" EX: "11.05.23"
 	public String filterLogsByDate(String x) {
+		updateLoggedMessageArray();
 		StringBuilder filteredLoggedMessages = new StringBuilder();
 		
 		for (String loggedMessage : loggedMessagesArray) {
 			//split message by comma and extract date
-			String[] parts = loggedMessage.split("\\)");
+			String[] parts = loggedMessage.split(",");
 			String dateString = parts[1].trim().split(",")[0];
 			//System.out.println(dateString);
 			if (x.equalsIgnoreCase(dateString)) {
@@ -85,7 +87,7 @@ public class Log {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM.dd.yy,HH:mm");
 		String formattedDate = dateFormat.format(messageDate);
 		//format the string to be logged
-		String messageToLog = message.getMessageSender() + "," +  message.getMessageSenderUID() +  
+		String messageToLog = message.getMessageSender() + "," +  message.getMessageSenderUID() + "," + 
 		 formattedDate + "," + message.getMessageString();
 		//write to file on a new line
 		//THIS IS WHERE THE FILE NAME SHOULD BE CHANGED
@@ -100,7 +102,7 @@ public class Log {
 	}
 	
 	
-	//driver for testing, THIS SHOULD BE DELETED
+//driver for testing, THIS SHOULD BE DELETED
 //	public static void main(String[] args) {
 //        Log log = new Log();
 //        
@@ -108,14 +110,14 @@ public class Log {
 //        System.out.println("All messages from textfile:");
 //        System.out.println(log.getAllLogs());
 //        
-//        //test filterLogsBySender
-//        System.out.println("All messages from sender JOE:\n");
-//        String filteredMessages = log.filterLogsBySender("JOE");
+//       //test filterLogsBySender
+//        System.out.println("All messages from sender tommy:\n");
+//        String filteredMessages = log.filterLogsBySender("tommy");
 //        System.out.println(filteredMessages);
-//        
+//      
 //        //test filterLogsByDate
 //        System.out.println("All messages from date 11.28.23:\n");
-//        String filteredDates = log.filterLogsByDate("11.28.23");
+//        String filteredDates = log.filterLogsByDate("12.1.23");
 //        System.out.println(filteredDates);
 //        
 //        //create message object
