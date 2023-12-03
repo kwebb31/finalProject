@@ -20,12 +20,12 @@ public class CommunicationManager implements Runnable {
 		CommunicationManager receive = new CommunicationManager();
 		Thread thread = new Thread(receive);
 		
-  	
+  	/*
 		try {
 			ArrayList<Integer> test = new ArrayList<Integer>();
 			test.add(1);
 			client.login("tommy", "password1");
-			thread.start();
+			
 			
 			client.sendMessage("Hello", "tommy", "tommy", "1", test);
 			//client.receiveMessage();
@@ -36,11 +36,13 @@ public class CommunicationManager implements Runnable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-//		CommunicationUserInterface CommInterface;
-//		CommInterface = new CommunicationGUI(client);
-//		CommInterface.processCommands();
-
+*/
+		thread.start();
+		CommunicationUserInterface CommInterface;
+		CommInterface = new CommunicationGUI(client);
+		CommInterface.processCommands();
+		
+		
 	}
 
 	@Override

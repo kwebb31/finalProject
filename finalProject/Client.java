@@ -98,15 +98,21 @@ public class Client {
 
 	
 	public synchronized Boolean logout() throws IOException, ClassNotFoundException {
+		System.out.println("logging out..");
 		Message Temp = new Message("",user.userName,"Server",MessageType.LOGOUT);
 		objectOutputStream.writeObject(Temp);
-		Temp = (Message) objectInputStream.readObject();
-		if(Temp.getMessageString().equals("Success")) {
-			user = new User();
-		}
+		System.out.println("message to server sent");
+		//Temp = (Message) objectInputStream.readObject();
+		System.out.println();
+		//if(Temp.getMessageString().equals("Success")) {
+			//user = new User();
+			
+		//}
+		
 		isLoggedIn = false;
 		loginAttempt = 0;
 		//isConnected = false;
+		System.out.println("logout success");
 		return isLoggedIn;
 	}
 	

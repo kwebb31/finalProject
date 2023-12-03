@@ -14,7 +14,7 @@ public class Server {
 	//private static ArrayList<String> pwArray = new ArrayList<String>();
 	private static ArrayList<User> users = new ArrayList<User>();
 	private static ArrayList<ClientHandler> clients = new ArrayList<ClientHandler>();
-	private static ArrayList<Message> asyncMessages  = new ArrayList<Message>();
+	public static ArrayList<Message> asyncMessages  = new ArrayList<Message>();
 	private static ArrayList<Chat> chats = new ArrayList<Chat>();
 	static ArrayList<Socket> clientsockets;
 	private static int activeClients = 0;
@@ -181,6 +181,7 @@ public class Server {
 			w.writeObject(message);
 			writer.close();
 			w.close();
+			System.out.println("done storing async message");
 		}
 		
 		// load the messages from file to arraylist on server start
@@ -225,7 +226,9 @@ public class Server {
 		}
 		*/
 		// check to send messages to users that have logged in.
+		/*
 		void sendAsynchronousMessage() throws IOException {
+		if(asyncMessages.size() > 0) {
 			for(Message msg : asyncMessages) {
 				for(int s : msg.messageReceiverUID) {
 					if(s == current.id && current.userIsOnline == true) {
@@ -239,6 +242,7 @@ public class Server {
 				}
 
 			}
+		}
 			try {
 				FileOutputStream writer = new FileOutputStream(new File("asyncMessages.txt"));
 				ObjectOutputStream w = new ObjectOutputStream(writer); 
@@ -247,12 +251,44 @@ public class Server {
 				}
 				writer.close();
 				w.close();
+				System.out.println("done sending async");
 			}catch(EOFException e) {
 				
 			}
 
 		}
-		
+		*/
+		void sendAsynchronousMessage() throws IOException {
+		if(asyncMessages.size() > 0) {
+			ArrayList<Message> msgToRemove = new ArrayList<Message>();
+			for(Message msg : asyncMessages) {
+				for(int s : msg.messageReceiverUID) {
+					if(s == current.id && current.userIsOnline == true) {
+						log.addMessageToFile(msg);
+						objectOutputStream.writeObject(msg);
+						objectOutputStream.flush();
+						if(s == current.id) {
+							msgToRemove.add(msg);
+						}
+					}
+				}
+			}
+			asyncMessages.removeAll(msgToRemove);
+		}
+			try {
+				FileOutputStream writer = new FileOutputStream(new File("asyncMessages.txt"));
+				ObjectOutputStream w = new ObjectOutputStream(writer); 
+				for(Message msg : asyncMessages) {		
+					w.writeObject(msg);
+				}
+				writer.close();
+				w.close();
+				System.out.println("done sending async");
+			}catch(EOFException e) {
+				
+			}
+
+		}
 		// logout method, receives a message object with MessageType logout and then signs the user out and clears the instance of user in this client
 		void logout(Message msg) throws IOException {
 			String temp = msg.getMessageString();
@@ -260,9 +296,9 @@ public class Server {
 			 for (User user : users) {
 		            if (user.userName.equals(temp2[0]) && user.getPassword().equals(temp2[1])) {
 		                user.signOut();
-		                Message temp3 = new Message("Success","Server",user.userName,MessageType.LOGOUT);
-		                objectOutputStream.writeObject(temp3);
-		                current = new User();
+		                //Message temp3 = new Message("Success","Server",user.userName,MessageType.LOGOUT);
+		                //objectOutputStream.writeObject(temp3);
+		                //current = new User();
 		                System.out.println("Logout Success");
 		            }
 		        }
