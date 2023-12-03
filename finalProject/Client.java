@@ -136,6 +136,14 @@ public class Client {
 		}
 			return null;
 	}
+	
+	public String getParticipantsName(int userID, ArrayList<Integer> participants) throws IOException, ClassNotFoundException {
+		Message temp = new Message("", "" , MessageType.GET_NAMES, userID, participants);
+		objectOutputStream.writeObject(temp);
+		
+		Message returnMessage = (Message) objectInputStream.readObject();
+		return returnMessage.messageString;
+	}
 
 	// return the logs depending on what user decides
 	public String viewLog(String s) {

@@ -6,9 +6,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.awt.event.*;
@@ -21,206 +18,406 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-public class CommunicationGUI implements CommunicationUserInterface{
-	
-	private String username;
-	private String password;
-	private Client client;
-	private JFrame frame;
-	private JFrame groupFrame;
-	private JPanel optionsPanel;
-	JButton logout;
-	JButton showDirectory;
-	JButton createGroup;
-	JButton sendNewMessage;
-	JButton viewLogs;
-	JFrame directoryFrame;
-	private int counter;
-	private JList jlistUsers;
-	private JPanel listPanel;
-	private DefaultListModel<String> chats;
-	private JList jlistchats;
-	private JList jlistDirectory;
-	private JPanel overallPanel;
-	private DefaultListModel<String> userList;
-	private String MessageInputMessage;
-	private int indexClicked = -1;
-//	private String[] userDirectory = {"1,TOMMY,ONLINE", "2,VANSH,OFFLINE", "3,TOMMY1,ONLINE"};	
-	private String [] userDirectory;
-	boolean added = false;
-	JList jlistSelectedUsers;
-	ArrayList<Integer> receiversID;
+public class CommunicationGUI implements CommunicationUserInterface {
 
-		
-	
-	public CommunicationGUI(Client client) {
-		this.client = client;
-		this.counter = 0;
-		this.receiversID = new ArrayList<Integer>();
-	}
-	
+    private String username;
+    private String password;
+    private Client client;
+    private JFrame frame;
+    private JFrame groupFrame;
+    private JPanel optionsPanel;
+    private JButton logout;
+    private JButton showDirectory;
+    private JButton createGroup;
+    private JButton sendNewMessage;
+    private JButton viewLogs;
+    private JButton sendMessage;
+    private JFrame directoryFrame;
+    private int counter;
+    private JList jlistUsers;
+    private JPanel listPanel;
+    private DefaultListModel<String> chats;
+    private JList jlistchats;
+    private JList jlistDirectory;
+    private JPanel overallPanel;
+    private DefaultListModel<String> userList;
+    private String MessageInputMessage;
+    private int indexClicked = -1;
+    private String[] userDirectory;
+    private boolean added = false;
+    private JList jlistSelectedUsers;
+    private ArrayList<Integer> receiversID;
+    private ArrayList<Chat> userChatroomArray = new ArrayList<Chat>();
 
-	public void processCommands() {
-		if(counter == 0) {
-			username = JOptionPane.showInputDialog("Enter Your Username");
-			password = JOptionPane.showInputDialog("Enter Your Password");
-			
-		}
-		
-		else {
-			username = JOptionPane.showInputDialog("Failed Login! Incorrect Details! Try again! \nEnter Your Username");
-			password = JOptionPane.showInputDialog("Enter Your Password");
-		}
-		
-		
-//		setDisplayPanels();
-//		
-		
-		try {
-			if(client.login(username, password)) {
-				setDisplayPanels();
-			}
-			
-			else {
-				counter++;
-				processCommands();
-			}
-			
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
-	
-	
-	private void setDisplayPanels(){
-		
-		// creating a frame with default close operation
-		frame = new JFrame("Communication");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				 
-		// creating a panel to display options with flow layout
-		optionsPanel = new JPanel();
-		LayoutManager layout = new FlowLayout();
-		optionsPanel.setLayout(layout);
-				 
-		// initializing all the Buttons we need on our option panels
-		logout = new JButton("Logout");
-		showDirectory = new JButton("Show Directory");
-		sendNewMessage = new JButton("Create a new chat");
-		createGroup = new JButton("Create a group");
-		viewLogs = new JButton("View Logs");
-		
-		frame.getRootPane().setDefaultButton(logout);
-		
-		
-		// writing the actionListener function for each button pressed to perform
-		// specific required tasks
-		 logout.addActionListener(new ActionListener(){
-			 public void actionPerformed(ActionEvent e) {
-				try {
-					logout();
-				} catch (ClassNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			 	}
-		 	});
-				 
-		showDirectory.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e) {
-				try {
-					showDirectoryPanel();
-				} catch (ClassNotFoundException | IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				}
-			});
-				 
+    public CommunicationGUI(Client client) {
+        this.client = client;
+        this.counter = 0;
+        this.receiversID = new ArrayList<Integer>();
+    }
 
-				 
-		 sendNewMessage.addActionListener(new ActionListener(){
-			 public void actionPerformed(ActionEvent e) {
-				 try {
-					sendNewMessage();
-				} catch (ClassNotFoundException | IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				 }
-			 });
-		 
-		 createGroup.addActionListener(new ActionListener(){
-			 public void actionPerformed(ActionEvent e) {
-				 try {
-					createGroup();
-				} catch (ClassNotFoundException | IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				 }
-			 });
-				 
-		viewLogs.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e) {
-				 viewLogs();
-				}
-			 });
-		
-		// adding all the buttons to our options panel
-		optionsPanel.add(logout);
-		optionsPanel.add(showDirectory);
-		optionsPanel.add(sendNewMessage);
-		optionsPanel.add(createGroup);
-		if(client.user.getRole() == Role.IT) {
-			optionsPanel.add(viewLogs);
-		}
+    public void processCommands() {
+        if (counter == 0) {
+            username = JOptionPane.showInputDialog("Enter Your Username");
+            password = JOptionPane.showInputDialog("Enter Your Password");
 
-		
-		
-		// creating another panel to display all the DVDs with grid Layout
-		listPanel = new JPanel();
-		listPanel.setLayout(new GridLayout());
-				 
-		// creating a list for the grid Layout
-		 chats = new DefaultListModel();
-		 
-		 
-		 // creating a jlist to which our list is passed
-		 jlistchats = new JList(chats);
-		 
-		 // adding that jlist to the listPanel
-		 listPanel.add(jlistchats);
-		 
-		 // creating an overall panel which has a grid layout and adding the optionsPanel
-		 // and listPanel to it
-		 overallPanel = new JPanel();
-		 overallPanel.setLayout(new GridLayout());
-		 overallPanel.add(optionsPanel);
-		 overallPanel.add(listPanel);
-			 
-		 // setting the size of the frame as well as attaching the overallPanel to the frame
-		 frame.getContentPane().add(overallPanel);
-		 frame.setSize(1200,800);
-		 frame.setLocationRelativeTo(null);			 
-		 frame.setVisible(true);
-		
-	}
-	
-	private void logout() throws ClassNotFoundException, IOException {
-		client.logout();
-		frame.dispose();
-	}
-	
-	private void showDirectory() throws ClassNotFoundException, IOException {
+        } else {
+            username = JOptionPane.showInputDialog("Failed Login! Incorrect Details! Try again! \nEnter Your Username");
+            password = JOptionPane.showInputDialog("Enter Your Password");
+        }
+
+        try {
+            if (client.login(username, password)) {
+                setDisplayPanels();
+            } else {
+                counter++;
+                processCommands();
+            }
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setDisplayPanels() throws ClassNotFoundException, IOException {
+        // Create a new frame
+        frame = new JFrame("Communication");
+
+        // Creating a panel to display options with flow layout
+        optionsPanel = new JPanel();
+        LayoutManager layout = new FlowLayout();
+        optionsPanel.setLayout(layout);
+
+        // Initializing all the buttons we need on our option panels
+        logout = new JButton("Logout");
+        showDirectory = new JButton("Show Directory");
+        sendNewMessage = new JButton("Create a new chat");
+        createGroup = new JButton("Create a group");
+        viewLogs = new JButton("View Logs");
+
+        JButton refresh = new JButton("Refresh");
+
+        refresh.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    setDisplayPanels();
+                } catch (ClassNotFoundException | IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        frame.getRootPane().setDefaultButton(logout);
+
+        // Writing the actionListener function for each button pressed to perform
+        // specific required tasks
+        logout.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    logout();
+                } catch (ClassNotFoundException | IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        showDirectory.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    showDirectoryPanel();
+                } catch (ClassNotFoundException | IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        sendNewMessage.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    showDirectory();
+                } catch (ClassNotFoundException | IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        createGroup.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    createGroup();
+                } catch (ClassNotFoundException | IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        viewLogs.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                viewLogs();
+            }
+        });
+
+        // Adding all the buttons to our options panel
+        optionsPanel.add(logout);
+        optionsPanel.add(showDirectory);
+        optionsPanel.add(sendNewMessage);
+        optionsPanel.add(createGroup);
+        if (client.user.getRole() == Role.IT) {
+            optionsPanel.add(viewLogs);
+        }
+        optionsPanel.add(refresh);
+
+        // Creating another panel to display all the DVDs with grid Layout
+        listPanel = new JPanel();
+        listPanel.setLayout(new GridLayout());
+
+        // Creating a list for the grid Layout
+        chats = new DefaultListModel();
+
+        userChatroomArray = client.getAllChatRooms();
+
+        for (int i = 0; i < userChatroomArray.size(); i++) {
+            chats.addElement(client.getParticipantsName(client.user.id, userChatroomArray.get(i).participants));
+        }
+
+        // Creating a jlist to which our list is passed
+        jlistchats = new JList(chats);
+
+        // Adding that jlist to the listPanel
+        listPanel.add(jlistchats);
+
+        // Creating a mouseListener to do different operations for the elements in the list
+        MouseListener mouseListener = new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                // Checking if the element is clicked twice, then allowing the user to remove
+                // it
+                // from there itself, and also enables other options which will be redundant
+                // to show if
+                // an element is selected
+                if (e.getClickCount() == 2) {
+                    indexClicked = jlistchats.locationToIndex(e.getPoint());
+                    openChat();
+                }
+            }
+        };
+
+        // Creating an overall panel which has a grid layout and adding the optionsPanel
+        // and listPanel to it
+        jlistchats.addMouseListener(mouseListener);
+
+        overallPanel = new JPanel();
+        overallPanel.setLayout(new GridLayout());
+        overallPanel.add(optionsPanel);
+        overallPanel.add(listPanel);
+
+        // Setting the size of the frame as well as attaching the overallPanel to the
+        // frame
+        frame.getContentPane().add(overallPanel);
+        frame.setSize(1200, 800);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+
+    private void logout() throws ClassNotFoundException, IOException {
+        JFrame logoutFrame = new JFrame();
+        client.logout();
+        logoutFrame.dispose();
+        frame.dispose();
+    }
+
+    private void showDirectoryPanel() throws ClassNotFoundException, IOException {
+        JFrame showDirectoryFrame = new JFrame();
+
+        JPanel directoryPanel = new JPanel();
+        directoryPanel.setLayout(new GridLayout());
+
+        JPanel newDirectoryPanel = new JPanel();
+        newDirectoryPanel.setLayout(new GridLayout());
+
+        JPanel newOptionsPanel = new JPanel();
+        newOptionsPanel.setLayout(new FlowLayout());
+
+        JButton refresh = new JButton("Refresh");
+
+        refresh.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showDirectoryFrame.dispose();
+                try {
+                    showDirectoryPanel();
+                } catch (ClassNotFoundException | IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        String temp = client.getUserDirectory();
+        userDirectory = temp.split("\n");
+
+        userList = new DefaultListModel();
+
+        for (int i = 0; i < userDirectory.length; i++) {
+            String[] parse = userDirectory[i].split(",");
+            userList.addElement(parse[1] + " - " + parse[2]);
+        }
+
+        jlistUsers = new JList(userList);
+        jlistUsers.setCellRenderer(new CustomListCellRenderer());
+        newDirectoryPanel.add(jlistUsers);
+        newOptionsPanel.add(refresh);
+        directoryPanel.add(newOptionsPanel);
+        directoryPanel.add(newDirectoryPanel);
+
+        showDirectoryFrame.getRootPane().setDefaultButton(refresh);
+        showDirectoryFrame.getContentPane().add(directoryPanel);
+        showDirectoryFrame.setSize(400, 600);
+        showDirectoryFrame.setLocationRelativeTo(null);
+        showDirectoryFrame.setVisible(true);
+    }
+
+    private void sendNewMessage() throws ClassNotFoundException, IOException {
+        JFrame sendNewMessageFrame = new JFrame();
+        showDirectoryPanel();
+    }
+
+    private void sendNewMessageToUser() throws IOException {
+        JFrame sendNewMessageToUserFrame = new JFrame();
+        String inputBox = "Enter message you want to send to ";
+        if (receiversID.size() > 1) {
+            inputBox += "this Group";
+        } else {
+            inputBox += userDirectory[indexClicked].split(",")[1];
+        }
+        String messageToBeSent = JOptionPane.showInputDialog(inputBox);
+        client.sendMessage(messageToBeSent, username, userDirectory[indexClicked],
+                client.user.getID().toString(), receiversID);
+        receiversID.clear();
+    }
+
+    private void viewLogs() {
+        JFrame viewLogsFrame = new JFrame();
+    }
+
+    private void createGroup() throws ClassNotFoundException, IOException {
+        JFrame createGroupFrame = new JFrame();
+
+        receiversID.clear();
+        added = false;
+
+        groupFrame = new JFrame();
+
+        JPanel groupOverviewPanel = new JPanel();
+        groupOverviewPanel.setLayout(new GridLayout());
+
+        JPanel newDirectoryPanel = new JPanel();
+        newDirectoryPanel.setLayout(new GridLayout());
+
+        JPanel selectedUserPanel = new JPanel();
+        selectedUserPanel.setLayout(new GridLayout());
+
+        JPanel newOptionsPanel = new JPanel();
+        newOptionsPanel.setLayout(new FlowLayout());
+
+        JButton sendMessage = new JButton("Send Message");
+        sendMessage.setEnabled(false);
+
+        sendMessage.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                receiversID.sort(null);
+                System.out.println(receiversID.toString());
+                try {
+                    sendNewMessageToUser();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        newOptionsPanel.add(sendMessage);
+
+        DefaultListModel<String> selectedUserList = new DefaultListModel();
+
+        JButton addPerson = new JButton("Add Person to Group");
+        addPerson.setEnabled(false);
+
+        addPerson.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                for (int i = 0; i < selectedUserList.getSize(); i++) {
+                    if (selectedUserList.elementAt(i).toString().equals(userDirectory[indexClicked].split(",")[1])) {
+                        added = true;
+                    }
+                }
+
+                if (added == false) {
+                    selectedUserList.addElement(userDirectory[indexClicked].split(",")[1]);
+                    receiversID.add(Integer.parseInt(userDirectory[indexClicked].split(",")[0]));
+                    sendMessage.setEnabled(true);
+                }
+
+                added = false;
+                addPerson.setEnabled(false);
+            }
+        });
+
+        newOptionsPanel.add(addPerson);
+
+        String temp = client.getUserDirectory();
+        userDirectory = temp.split("\n");
+
+        userList = new DefaultListModel();
+
+        for (int i = 0; i < userDirectory.length; i++) {
+            String[] parse = userDirectory[i].split(",");
+            userList.addElement(parse[1]);
+        }
+
+        jlistUsers = new JList(userList);
+        newDirectoryPanel.add(jlistUsers);
+
+        jlistSelectedUsers = new JList(selectedUserList);
+        selectedUserPanel.add(jlistSelectedUsers);
+
+        MouseListener mouseListener = new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 1) {
+                    addPerson.setEnabled(true);
+                    indexClicked = jlistUsers.locationToIndex(e.getPoint());
+                }
+            }
+        };
+
+        jlistUsers.addMouseListener(mouseListener);
+
+        groupOverviewPanel.add(newOptionsPanel);
+        groupOverviewPanel.add(newDirectoryPanel);
+        groupOverviewPanel.add(selectedUserPanel);
+
+        groupFrame.getRootPane().setDefaultButton(sendMessage);
+        groupFrame.getContentPane().add(groupOverviewPanel);
+        groupFrame.setSize(600, 600);
+        groupFrame.setLocationRelativeTo(null);
+        groupFrame.setVisible(true);
+    }
+
+    private class CustomListCellRenderer extends DefaultListCellRenderer {
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+                boolean cellHasFocus) {
+            Component renderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+            // Customize the text color based on the condition
+            String text = value.toString();
+            if (text.contains("ONLINE")) {
+                renderer.setForeground(new Color(0, 200, 0));
+            } else {
+                renderer.setForeground(Color.RED);
+            }
+
+            return renderer;
+        }
+    }
+
+    private void showDirectory() throws ClassNotFoundException, IOException {
 		receiversID.clear();
 		directoryFrame = new JFrame();
 //		directoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -290,208 +487,62 @@ public class CommunicationGUI implements CommunicationUserInterface{
 		
 		
 	}
-	
+    
+    private void openChat() {
+        JFrame openChatFrame = new JFrame();
 
-	
-	private void sendNewMessage() throws ClassNotFoundException, IOException {
-		showDirectory();
-	}
-	
-	private void sendNewMessageToUser() throws IOException {
-		String inputBox = "Enter message you want to send to ";
-		if(receiversID.size() > 1) {
-			inputBox += "this Group";
-		}
-		else {
-			inputBox += userDirectory[indexClicked].split(",")[1];
-		}
-		String messageToBeSent = JOptionPane.showInputDialog(inputBox);
-		client.sendMessage(messageToBeSent, username, userDirectory[indexClicked], client.user.getID().toString(), receiversID);
-	}
+        JPanel chatOverviewPanel = new JPanel();
+        chatOverviewPanel.setLayout(new GridLayout());
 
-	private void viewLogs() {
-	
-	}
-	
-	private void createGroup() throws ClassNotFoundException, IOException {
-		
-		receiversID.clear();
-		
-		added = false;
-		
-		groupFrame = new JFrame();
-//		directoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		JPanel groupOverviewPanel = new JPanel();
-		groupOverviewPanel.setLayout(new GridLayout());
-		
-		JPanel newDirectoryPanel = new JPanel();
-		newDirectoryPanel.setLayout(new GridLayout());
-		
-		JPanel selectedUserPanel = new JPanel();
-		selectedUserPanel.setLayout(new GridLayout());
-		
-		JPanel newOptionsPanel = new JPanel();
-		newOptionsPanel.setLayout(new FlowLayout());
-		
-		JButton sendMessage = new JButton("Send Message");
-		sendMessage.setEnabled(false);
-		sendMessage.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				receiversID.sort(null);
-				System.out.println(receiversID.toString());
-				try {
-					sendNewMessageToUser();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
-//		sendMessage.setPreferredSize(new Dimension(20,20));
-		newOptionsPanel.add(sendMessage);
-		
-		DefaultListModel<String> selectedUserList = new DefaultListModel();
-		
-		JButton addPerson = new JButton("Add Person to Group");
-		addPerson.setEnabled(false);
-		
+        JPanel messagePanel = new JPanel();
+        messagePanel.setLayout(new GridLayout());
 
-		addPerson.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				for(int i = 0; i < selectedUserList.getSize(); i++) {
-					if(selectedUserList.elementAt(i).toString().equals(userDirectory[indexClicked].split(",")[1])) {
-						added = true;
-					}
-				}
-				
-				if(added == false) {
-					selectedUserList.addElement(userDirectory[indexClicked].split(",")[1]);
-					receiversID.add(Integer.parseInt(userDirectory[indexClicked].split(",")[0]));
-					sendMessage.setEnabled(true);
-				}
-				
-				added = false;
-				addPerson.setEnabled(false);
-			}
-		});
-//		sendMessage.setPreferredSize(new Dimension(20,20));
-		newOptionsPanel.add(addPerson);
-		
-		String temp = client.getUserDirectory();
-		userDirectory = temp.split("\n");
-		
-		userList = new DefaultListModel();
-		
-		for(int i = 0; i < userDirectory.length; i++) {
-			String[] parse = userDirectory[i].split(",");
-			userList.addElement(parse[1]);
-		}
-		
-		
-		jlistUsers = new JList(userList);
-		newDirectoryPanel.add(jlistUsers);
-		
-		jlistSelectedUsers = new JList(selectedUserList);
-		selectedUserPanel.add(jlistSelectedUsers);
-		
-		MouseListener mouseListener = new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				if(e.getClickCount() == 1) {
-					addPerson.setEnabled(true);
-					indexClicked = jlistUsers.locationToIndex(e.getPoint());
-				}
-			}
-		};
-		
-		jlistUsers.addMouseListener(mouseListener);
-		
-		
-		groupOverviewPanel.add(newOptionsPanel);
-		groupOverviewPanel.add(newDirectoryPanel);
-		groupOverviewPanel.add(selectedUserPanel);
+        JPanel newOptionsPanel = new JPanel();
+        newOptionsPanel.setLayout(new FlowLayout());
 
+        JButton sendMessage = new JButton("Send Message");
 
-		
-		groupFrame.getRootPane().setDefaultButton(sendMessage);		
-		groupFrame.getContentPane().add(groupOverviewPanel);
-		groupFrame.setSize(600,600);
-		groupFrame.setLocationRelativeTo(null);
-		groupFrame.setVisible(true);
-		
-		
-	}
-	
-	private class CustomListCellRenderer extends DefaultListCellRenderer {
-        @Override
-        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
-                boolean cellHasFocus) {
-            Component renderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-
-            // Customize the text color based on the condition
-            String text = value.toString();
-            if (text.contains("ONLINE")) {
-                renderer.setForeground(new Color(0,200,0));
-            } else {
-                renderer.setForeground(Color.RED);
+        sendMessage.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    sendNewMessageToUser();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
+        });
 
-            return renderer;
+        newOptionsPanel.add(sendMessage);
+
+        JButton refresh = new JButton("Refresh");
+
+        refresh.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                openChat();
+            }
+        });
+
+        newOptionsPanel.add(refresh);
+
+        ArrayList<Message> messages = client.getAllMessages(userChatroomArray.get(indexClicked).chatRoomID);
+
+        DefaultListModel<String> messageList = new DefaultListModel();
+
+        for (int i = 0; i < messages.size(); i++) {
+            messageList.addElement(
+                    messages.get(i).getMessageString() + " - " + messages.get(i).getMessageSender() + " - " + messages.get(i).getMessageDate().toString());
         }
-	}
-	
-	private void showDirectoryPanel() throws ClassNotFoundException, IOException {
-		directoryFrame = new JFrame();
-//		directoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		JPanel directoryPanel = new JPanel();
-		directoryPanel.setLayout(new GridLayout());
-		
-		JPanel newDirectoryPanel = new JPanel();
-		newDirectoryPanel.setLayout(new GridLayout());
-		
-		JPanel newOptionsPanel = new JPanel();
-		newOptionsPanel.setLayout(new FlowLayout());
-		
-		JButton refresh = new JButton("Refresh");
-		refresh.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				directoryFrame.dispose();
-				try {
-					showDirectoryPanel();
-				} catch (ClassNotFoundException | IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
-				
-		String temp = client.getUserDirectory();
-		userDirectory = temp.split("\n");
 
-		
-		userList = new DefaultListModel();
-		
-		for(int i = 0; i < userDirectory.length; i++) {
-			String[] parse = userDirectory[i].split(",");
-			userList.addElement(parse[1] + " - " + parse[2]);
-		}
-		
-		
-		jlistUsers = new JList(userList);
-		jlistUsers.setCellRenderer(new CustomListCellRenderer());
-		newDirectoryPanel.add(jlistUsers);
-		newOptionsPanel.add(refresh);
-		directoryPanel.add(newOptionsPanel);
-		directoryPanel.add(newDirectoryPanel);
+        JList jlistMessages = new JList(messageList);
+        messagePanel.add(jlistMessages);
 
-		
+        chatOverviewPanel.add(newOptionsPanel);
+        chatOverviewPanel.add(messagePanel);
 
-		directoryFrame.getRootPane().setDefaultButton(refresh);		
-		directoryFrame.getContentPane().add(directoryPanel);
-		directoryFrame.setSize(400,600);
-		directoryFrame.setLocationRelativeTo(null);
-		directoryFrame.setVisible(true);
-	}
-
+        openChatFrame.getRootPane().setDefaultButton(sendMessage);
+        openChatFrame.getContentPane().add(chatOverviewPanel);
+        openChatFrame.setSize(600, 600);
+        openChatFrame.setLocationRelativeTo(null);
+        openChatFrame.setVisible(true);
+    }
 }

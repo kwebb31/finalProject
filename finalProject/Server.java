@@ -105,6 +105,9 @@ public class Server {
 					 else if(temp.getMessageType().equals(MessageType.DIRECTORY)) {
 						 getUserDirectory(temp);
 					 }
+					 else if(temp.getMessageType().equals(MessageType.GET_NAMES)) {
+						 getParticipantsNames(temp);
+					 }
 					 
 				 }
 			 } catch(IOException e) {	 
@@ -280,6 +283,24 @@ public class Server {
 		
 		void getUserChats() {
 			
+		}
+		
+		private void getParticipantsNames(Message temp) throws IOException {
+			String names = "";
+			
+			for(int i = 0; i < users.size(); i++) {
+				if(temp.getMessageSenderUID().equals(users.get(i).id)) {
+					continue;
+				}
+				else if(temp.messageReceiverUID.contains(users.get(i).id)) {
+					names+= users.get(i).getUserName() + " ";
+				}
+			}
+			
+			Message returnMessage = new Message(names, "", MessageType.GET_NAMES, temp.getMessageSenderUID(), temp.getReceiverUID());
+			objectOutputStream.writeObject(returnMessage);
+
+				
 		}
 	}
 }

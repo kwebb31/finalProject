@@ -47,6 +47,7 @@ public class Chat {
 		}
 		}
 	
+	
 	private void SetID() {
 		this.chatRoomID = chatRoomCounter++; 
 	}
