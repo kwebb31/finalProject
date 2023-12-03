@@ -226,39 +226,9 @@ public class Server {
 		}
 		*/
 		// check to send messages to users that have logged in.
-		/*
+		
 		void sendAsynchronousMessage() throws IOException {
-		if(asyncMessages.size() > 0) {
-			for(Message msg : asyncMessages) {
-				for(int s : msg.messageReceiverUID) {
-					if(s == current.id && current.userIsOnline == true) {
-						log.addMessageToFile(msg);
-						objectOutputStream.writeObject(msg);
-						objectOutputStream.flush();
-						if(s == current.id) {
-							asyncMessages.remove(msg);
-						}
-					}
-				}
-
-			}
-		}
-			try {
-				FileOutputStream writer = new FileOutputStream(new File("asyncMessages.txt"));
-				ObjectOutputStream w = new ObjectOutputStream(writer); 
-				for(Message msg : asyncMessages) {		
-					w.writeObject(msg);
-				}
-				writer.close();
-				w.close();
-				System.out.println("done sending async");
-			}catch(EOFException e) {
-				
-			}
-
-		}
-		*/
-		void sendAsynchronousMessage() throws IOException {
+			System.out.println("Sending the Async Messages to user");
 		if(asyncMessages.size() > 0) {
 			ArrayList<Message> msgToRemove = new ArrayList<Message>();
 			for(Message msg : asyncMessages) {
