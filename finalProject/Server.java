@@ -21,7 +21,6 @@ public class Server {
 	private static ObjectOutputStream objectOutputStream;
 	private static ObjectInputStream objectInputStream;
 	private static Log log = new Log();
-	//private static Log = new Log();
 	
 	public static void main(String[] args) {
 		ServerSocket ss = null;
@@ -80,11 +79,13 @@ public class Server {
 			this.s = socket;
 		}
 		public void run() {
-		System.out.println("hello");
+			// load the users of the chat application
 		users = UserLoader.loadUsersFromFile("users.txt");
 		
 			 try {
+				 // load all of the messages to send to users that are getting on
 				 loadAsyncMessages();
+				 // receive all incoming traffic and send them to the right place
 				 while(true) { 
 					 Message temp = (Message) objectInputStream.readObject(); 
 					 if (temp.getMessageType().equals(MessageType.LOGIN)) {
@@ -112,8 +113,9 @@ public class Server {
 		public ObjectOutputStream getObjectOutputStream() throws IOException {
 			return new ObjectOutputStream(this.s.getOutputStream());
 		}
+		
+		// when a login message is received, "authenticate the users credentials"
 		private void authenticate(Message msg) throws IOException {
-			System.out.println("authing");
 			Boolean success = false;
 			String temp = msg.getMessageString();
 			String[] temp2 = temp.split(":");
@@ -133,26 +135,22 @@ public class Server {
 				 Message temp3 = new Message("Unsuccessful","Server","Unknown User",MessageType.LOGIN);
 	                objectOutputStream.writeObject(temp3);
 			 }
-			 
-			 
+						 
 		}
 		// Send the message to the designated client and user
 		private void sendSynchronousMessage(Message message, ObjectOutputStream os) throws IOException {
 		    boolean recipientFound = false;
 		    System.out.println("the contents of message that is passed to sync msg:");
 		    System.out.println(message.toString());
+		    // check each client that is active
 		    for (ClientHandler client : clients) {
+		    	// if the user id matches the receiver, send out the message and log it
 		    	for(int s : message.messageReceiverUID){
 		    		if(client.current.id == s) {
 				        	 recipientFound = true;
-				        	 try {
-	                    // Flush the ObjectOutputStream to ensure that all data is sent
-				        		 //ObjectOutputStream os = client.getObjectOutputStream();
-//				        		 client.getObjectOutputStream().writeObject(message);
+				        	 try {	            
 				        		 os.writeObject(message);
 				        		 System.out.println("message sent?");
-//				        		 client.getObjectOutputStream().flush();
-//				        		 client.getObjectOutputStream().reset();
 				        		 os.flush();
 				        		 os.reset();
 				        		 log.addMessageToFile(message);
@@ -174,8 +172,9 @@ public class Server {
 		
 		// add the message to an arraylist that will be held by server until users are online
 		void offlineMessage(Message message) throws IOException{
-			asyncMessages.add(message);
-			
+			// add the message to the arrayList of all async messages
+			asyncMessages.add(message);		
+			// write the message to the file to store
 			FileOutputStream writer = new FileOutputStream(new File("asyncMessages.txt"));
 			ObjectOutputStream w = new ObjectOutputStream(writer);
 			w.writeObject(message);
@@ -196,40 +195,18 @@ public class Server {
 				reader.close();
 				r.close();
 
-//				while(line != null) {
-//					String[] getMessageAlone = line.split("\n");
-//					for(String message : getMessageAlone) {
-//						String[] parse = line.split(",");
-//						Message temp = new Message(parse[3], parse[1],parse[2],MessageType.valueOf(parse[4]),Integer.parseInt(parse[6]),parse[7]);
-//						temp.setMessageDate(Date.valueOf(parse[5]));
-//						asyncMessages.add(temp);
-//						
-//					}
-//					line = reader.nextLine();
-//				}
 			}catch (EOFException e)
 				{
 				    // end of stream
 				}
 		}
-		// load the messages from file to arraylist on server start
-		/*
-		void loadAsyncMessages() throws IOException {
-			BufferedReader reader = new BufferedReader(new FileReader("asyncMessages.csv"));
-			String line = reader.readLine();
-			while(line != null) {
-				String[] parse = line.split(",");
-				Message temp = new Message(parse[3], parse[1],parse[2],MessageType.valueOf(parse[4]),Integer.parseInt(parse[6],Integer.parseInt(parse[7])));
-				temp.setMessageDate(Date.valueOf(parse[5]));
-				asyncMessages.add(temp);
-			}
-		}
-		*/
+
 		// check to send messages to users that have logged in.
-		
 		void sendAsynchronousMessage() throws IOException {
 			System.out.println("Sending the Async Messages to user");
 		if(asyncMessages.size() > 0) {
+			// store all messages to the temp ArrayList and when all messages are sent, remove them from
+			// the async messages
 			ArrayList<Message> msgToRemove = new ArrayList<Message>();
 			for(Message msg : asyncMessages) {
 				for(int s : msg.messageReceiverUID) {
@@ -245,6 +222,7 @@ public class Server {
 			}
 			asyncMessages.removeAll(msgToRemove);
 		}
+		// update the file of async messages
 			try {
 				FileOutputStream writer = new FileOutputStream(new File("asyncMessages.txt"));
 				ObjectOutputStream w = new ObjectOutputStream(writer); 
@@ -259,6 +237,7 @@ public class Server {
 			}
 
 		}
+		
 		// logout method, receives a message object with MessageType logout and then signs the user out and clears the instance of user in this client
 		void logout(Message msg) throws IOException {
 			String temp = msg.getMessageString();
@@ -266,14 +245,12 @@ public class Server {
 			 for (User user : users) {
 		            if (user.userName.equals(temp2[0]) && user.getPassword().equals(temp2[1])) {
 		                user.signOut();
-		                //Message temp3 = new Message("Success","Server",user.userName,MessageType.LOGOUT);
-		                //objectOutputStream.writeObject(temp3);
-		                //current = new User();
 		                System.out.println("Logout Success");
 		            }
 		        }
 		}
 		
+		// send user directory to the client
 		private void getUserDirectory(Message temp) throws IOException {
 			String userName = temp.getMessageSender();
 			String userDirectories = "";
