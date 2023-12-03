@@ -100,6 +100,7 @@ public class CommunicationGUI implements CommunicationUserInterface {
 
         refresh.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+            	frame.dispose();
                 try {
                     setDisplayPanels();
                 } catch (ClassNotFoundException | IOException e1) {
