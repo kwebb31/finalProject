@@ -67,14 +67,30 @@ public class Client {
 	
 	// send a message to the server to send to designated client
 	public void sendMessage(String msg, String sender, String receiver, String senderUID, ArrayList<Integer> receiverUID ) throws IOException {
-			Message Temp = new Message(msg, sender, MessageType.TEXT, Integer.parseInt(senderUID) ,receiverUID);
-			objectOutputStream.writeObject(Temp);
+			Boolean executed = false;
+			Message temp = new Message(msg, sender, MessageType.TEXT, Integer.parseInt(senderUID) ,receiverUID);
+			ArrayList<Integer> tempParticipants = receiverUID;
+			tempParticipants.add(Integer.valueOf(senderUID));
+			tempParticipants.sort(null);
+			for(int i = 0; i < user.userChatroomArray.size(); i++) {
+				if(user.userChatroomArray.get(i).participants.equals(tempParticipants)) {
+					user.userChatroomArray.get(i).msgs.add(temp);
+					executed = true;
+					break;
+				}
+			}
+			if(executed == false) {
+				user.userChatroomArray.add(new Chat(tempParticipants));
+				user.userChatroomArray.get(user.userChatroomArray.size()-1).msgs.add(temp);
+			}
+			objectOutputStream.writeObject(temp);
 			objectOutputStream.flush();
 			
 	}
 	
 	// receive messages sent from the server
 	public void receiveMessage() throws IOException {
+		Boolean executed = false;
 	    System.out.println("Hello from receive msg");
 	    try {
 	        if (objectInputStream == null) {
@@ -84,22 +100,41 @@ public class Client {
 	        System.out.println("Before readObject");
 	        
 	        Message temp = (Message) objectInputStream.readObject();
+			ArrayList<Integer> tempParticipants = temp.getReceiverUID();
+			tempParticipants.add(Integer.valueOf(temp.getMessageSenderUID()));
+			tempParticipants.sort(null);
+			for(int i = 0; i < user.userChatroomArray.size(); i++) {
+				if(user.userChatroomArray.get(i).participants.equals(tempParticipants)) {
+					user.userChatroomArray.get(i).msgs.add(temp);
+					executed = true;
+					break;
+				}
+			}
+			if(executed == false) {
+				user.userChatroomArray.add(new Chat(tempParticipants));
+				user.userChatroomArray.get(user.userChatroomArray.size()-1).msgs.add(temp);
+			}
+	        
 	        System.out.println("After readObject");
 	        System.out.println(temp.toString());
 	        System.out.println("after tostring");
-	        messages.add(temp);
+	        
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
 	}
 	
-	// IN-PROGRESS: collect all of the messages for a chatroom and send to GUI for display
-	public ArrayList<Message> displayMessages(String chatroomID){
-		ArrayList<Message> display = new ArrayList<Message>();
-		for(Message m : messages) {
-		
+	public ArrayList<Chat> getAllChatRooms(){
+		return user.userChatroomArray;
+	}
+	
+	public ArrayList<Message> getAllMessages(int chatRoomID){
+		for(Chat c : user.userChatroomArray) {
+			if(c.chatRoomID == chatRoomID) {
+				return c.msgs;
+			}
 		}
-		return display;
+			return null;
 	}
 
 	// return the logs depending on what user decides

@@ -16,7 +16,7 @@ public class User implements Serializable {
 	String userPassword;
 	Boolean userIsOnline;
 	Boolean userLoginSuccessful;
-	ArrayList<String> userChatroomArray = new ArrayList<String>();
+	ArrayList<Chat> userChatroomArray = new ArrayList<Chat>();
 	ArrayList<String> userIDList = new ArrayList<String>();
 	//Default empty user constructor
 	public User() {

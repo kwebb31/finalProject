@@ -6,13 +6,14 @@ import java.util.*;
 //since it doesn't matter if they're IT users or 
 public class Chat {
 	
-	ArrayList<Integer>participants = new ArrayList();
-	static Integer chatRoomID = 0;
+	ArrayList<Integer>participants = new ArrayList<Integer>();
+	ArrayList<Message>msgs = new ArrayList<Message>();
+	int chatRoomID;
+	static int chatRoomCounter = 0;
 	
-
-
 	public Chat(ArrayList<Integer> newParticipants) {
 		SetID();
+		
 		//Message myMessage;
 		Integer myInt;
 		//for (int i = 0; i < newMessages.size(); i++) {
@@ -47,8 +48,7 @@ public class Chat {
 		}
 	
 	private void SetID() {
-		chatRoomID++;
-
+		this.chatRoomID = chatRoomCounter++; 
 	}
 
 	ArrayList<Integer> getParticipantsUID(){
