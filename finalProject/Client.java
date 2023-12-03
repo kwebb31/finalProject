@@ -66,7 +66,7 @@ public class Client {
 	}
 	
 	// send a message to the server to send to designated client
-	public synchronized void sendMessage(String msg, String sender, String receiver, String senderUID, ArrayList<Integer> receiverUID ) throws IOException {
+	public void sendMessage(String msg, String sender, String receiver, String senderUID, ArrayList<Integer> receiverUID ) throws IOException {
 			Message Temp = new Message(msg, sender, MessageType.TEXT, Integer.parseInt(senderUID) ,receiverUID);
 			objectOutputStream.writeObject(Temp);
 			objectOutputStream.flush();
@@ -74,7 +74,7 @@ public class Client {
 	}
 	
 	// receive messages sent from the server
-	public synchronized void receiveMessage() throws IOException {
+	public void receiveMessage() throws IOException {
 	    System.out.println("Hello from receive msg");
 	    try {
 	        if (objectInputStream == null) {
@@ -116,7 +116,7 @@ public class Client {
 	}	
 	
 	// request the server to logout the user
-	public synchronized Boolean logout() throws IOException, ClassNotFoundException {
+	public Boolean logout() throws IOException, ClassNotFoundException {
 		System.out.println("logging out..");
 		Message Temp = new Message("",user.userName,"Server",MessageType.LOGOUT);
 		objectOutputStream.writeObject(Temp);

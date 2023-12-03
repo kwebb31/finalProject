@@ -10,16 +10,12 @@ import finalProject.Message;
 
 
 public class Server {
-	//private static ArrayList<String> UserIDArray = new ArrayList<String>();
-	//private static ArrayList<String> pwArray = new ArrayList<String>();
-	private static ArrayList<User> users = new ArrayList<User>();
+	public static ArrayList<User> users = new ArrayList<User>();
 	private static ArrayList<ClientHandler> clients = new ArrayList<ClientHandler>();
-	public static ArrayList<Message> asyncMessages  = new ArrayList<Message>();
-	private static ArrayList<Chat> chats = new ArrayList<Chat>();
-	static ArrayList<Socket> clientsockets;
+
+	 //ArrayList<Socket> clientsockets;
 	private static int activeClients = 0;
-	private static ObjectOutputStream objectOutputStream;
-	private static ObjectInputStream objectInputStream;
+
 	private static Log log = new Log();
 	
 	public static void main(String[] args) {
@@ -27,10 +23,11 @@ public class Server {
 		
 		try {
 			// set server to listen on a port
+			users = UserLoader.loadUsersFromFile("users.txt");
 			ss = new ServerSocket(1234);
 			ss.setReuseAddress(true);
 			System.out.println("The Group 7 Comms Application Server is Running...");
-			users = UserLoader.loadUsersFromFile("users.txt");
+			
 			
 			//loop to accept connections
 			while (true) {
@@ -41,10 +38,7 @@ public class Server {
 						+ client.getInetAddress()
 								.getHostAddress());
 				// create input and outputs
-	            OutputStream outputStream = client.getOutputStream();
-	            objectOutputStream = new ObjectOutputStream(outputStream);
-	            InputStream inputStream = client.getInputStream();
-	            objectInputStream = new ObjectInputStream(inputStream); 
+
 				ClientHandler clientSock = new ClientHandler(client);
 				// create a thread to handle the client
 				clients.add(clientSock);
@@ -69,9 +63,14 @@ public class Server {
 	
 	//ClientHandler class
 	private static class ClientHandler implements Runnable{
+		//public static ArrayList<User> users2 = users;
+		public static ArrayList<Message> asyncMessages  = new ArrayList<Message>();
+		public static ArrayList<Chat> chats = new ArrayList<Chat>();
 	    // the user using this client
 	 	private User current = new User();
 		// set the input and outputs
+		public  ObjectOutputStream objectOutputStream;
+		public  ObjectInputStream objectInputStream;
 		//socket
 		private final Socket s;
 		// constructor
@@ -79,10 +78,14 @@ public class Server {
 			this.s = socket;
 		}
 		public void run() {
-			// load the users of the chat application
-		users = UserLoader.loadUsersFromFile("users.txt");
-		
+			
+ 
 			 try {
+		            OutputStream outputStream = s.getOutputStream();
+		            objectOutputStream = new ObjectOutputStream(outputStream);
+		            InputStream inputStream;
+					inputStream = s.getInputStream();
+		            objectInputStream = new ObjectInputStream(inputStream);
 				 // load all of the messages to send to users that are getting on
 				 loadAsyncMessages();
 				 // receive all incoming traffic and send them to the right place
@@ -126,6 +129,7 @@ public class Server {
 		                objectOutputStream.writeObject(temp3);
 		                current = user;
 		                System.out.println("Login Success");
+		                System.out.println(user.toString());
 		                sendAsynchronousMessage();
 		                success = true;
 		                break;
