@@ -8,18 +8,16 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.*;
 import finalProject.Message;
-/*
- * 	Program to display and modify a simple DVD collection
- */
 
+// used to start the GUI and thread that listens for messages
 public class CommunicationManager implements Runnable {
 	public static Client client = new Client();
-	 private volatile boolean isRunning = true;
 	public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
 		
 		CommunicationManager receive = new CommunicationManager();
 		Thread thread = new Thread(receive);
-		
+	
+	// COMMENTED OUT CODE IS FOR DEBUGGING
   	/*
 		try {
 			ArrayList<Integer> test = new ArrayList<Integer>();
@@ -46,11 +44,11 @@ public class CommunicationManager implements Runnable {
 	}
 
 	@Override
+	// thread action
 	public synchronized  void run() {
 		while(true) {
 			if(client.isLoggedIn) {
 				System.out.println("before read Object");
-				//Message Temp =(Message)objectInputStream.readObject();
 				try {
 					client.receiveMessage();
 				} catch (IOException e) {
