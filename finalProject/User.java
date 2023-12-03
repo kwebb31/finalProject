@@ -31,7 +31,7 @@ public class User implements Serializable {
 	public User(String userName, Role userRole, String userPassword, Boolean userIsOnline, Boolean userLoginSuccessful ) {
 		this.userName = userName;
 		SetID();
-		this.userRole = Role.REGULAR;
+		this.userRole = userRole;
 		this.userPassword = userPassword;
 		this.userIsOnline = userIsOnline;
 		this.userLoginSuccessful = userLoginSuccessful;
