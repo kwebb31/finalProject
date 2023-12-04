@@ -35,6 +35,8 @@ public class CommunicationGUI implements CommunicationUserInterface {
     private JButton viewLogs;
     private JButton sendMessage;
     private JButton refresh;
+    JButton viewLogsByDate;
+    JButton viewLogsBySender;
     private JFrame directoryFrame;
     private int counter;
     private JList jlistUsers;
@@ -111,6 +113,8 @@ public class CommunicationGUI implements CommunicationUserInterface {
         createGroup = new JButton("Create a group");
         viewLogs = new JButton("View Logs");
         refresh = new JButton("Refresh");
+        viewLogsByDate = new JButton("View Logs By Date");
+        viewLogsBySender = new JButton("View Logs By Sender");
 
         frame.getRootPane().setDefaultButton(logout);
 
@@ -178,6 +182,28 @@ public class CommunicationGUI implements CommunicationUserInterface {
                 }
             }
         });
+        
+        viewLogsByDate.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	
+                try {
+                    viewLogsByDate();
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        
+        viewLogsBySender.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	
+                try {
+                	viewLogsBySender();
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
 
         // Adding all the buttons to our options panel
         optionsPanel.add(logout);
@@ -186,6 +212,8 @@ public class CommunicationGUI implements CommunicationUserInterface {
         optionsPanel.add(createGroup);
         if (client.user.getRole() == Role.IT) {
             optionsPanel.add(viewLogs);
+            optionsPanel.add(viewLogsByDate);
+            optionsPanel.add(viewLogsBySender);
         }
         optionsPanel.add(refresh);
 
@@ -590,19 +618,19 @@ public class CommunicationGUI implements CommunicationUserInterface {
         JPanel newOptionsPanel = new JPanel();
         newOptionsPanel.setLayout(new FlowLayout());
 
-        JButton sendMessage = new JButton("Send Message");
-
-        sendMessage.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    sendNewMessageToUser();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        });
-
-        newOptionsPanel.add(sendMessage);
+//        JButton sendMessage = new JButton("Send Message");
+//
+//        sendMessage.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    sendNewMessageToUser();
+//                } catch (IOException e1) {
+//                    e1.printStackTrace();
+//                }
+//            }
+//        });
+//
+//        newOptionsPanel.add(sendMessage);
         
         JButton goBack = new JButton("Return to main lobby");
 
@@ -650,4 +678,46 @@ public class CommunicationGUI implements CommunicationUserInterface {
         openChatFrame.setLocationRelativeTo(null);
         openChatFrame.setVisible(true);
     }
+    
+    private void viewLogsByDate() {
+    	String date = JOptionPane.showInputDialog("Enter the Date in format MM.DD.YY");
+    	JFrame viewLogsFrame = new JFrame();
+        
+        viewLogsFrame.setLayout(new GridLayout());   
+        JPanel logPanel = new JPanel();
+        logPanel.setPreferredSize(new Dimension(600, 600));
+        JTextArea logs = new JTextArea(25,40);       
+        logs.append(client.viewLog(date));
+        logPanel.add(new JScrollPane(logs, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
+        
+        viewLogsFrame.add(logPanel);
+        
+        viewLogsFrame.setSize(600, 600);
+        viewLogsFrame.setLocationRelativeTo(null);
+        viewLogsFrame.setVisible(true);
+    	
+    	
+    }
+    
+    private void viewLogsBySender() {
+    	String sender = JOptionPane.showInputDialog("Enter the same of Sender");
+    	JFrame viewLogsFrame = new JFrame();
+        
+        viewLogsFrame.setLayout(new GridLayout());   
+        JPanel logPanel = new JPanel();
+        logPanel.setPreferredSize(new Dimension(600, 600));
+        JTextArea logs = new JTextArea(25,40);       
+        logs.append(client.viewLog(sender));
+        logPanel.add(new JScrollPane(logs, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
+        
+        viewLogsFrame.add(logPanel);
+        
+        viewLogsFrame.setSize(600, 600);
+        viewLogsFrame.setLocationRelativeTo(null);
+        viewLogsFrame.setVisible(true);
+    	
+    	
+    }
 }
+
+
