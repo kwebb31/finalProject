@@ -23,7 +23,7 @@ public class Log {
 	//method that reads the text file. updates the array of logged messages
 	public void updateLoggedMessageArray() {
 		//THIS IS WHERE THE FILE NAME SHOULD BE CHANGED
-		try (BufferedReader reader = new BufferedReader(new FileReader("commlogs.txt"))){
+		try (BufferedReader reader = new BufferedReader(new FileReader("commsLogs"))){
 			String line;
 			loggedMessagesArray.clear();
 			while((line = reader.readLine()) != null) {
@@ -54,7 +54,6 @@ public class Log {
 			// Split the message by comma and extract the sender
 			String[] parts = loggedMessage.split(",");
 			String messageSender = parts[0].trim().split(" ")[0];
-			//System.out.println(messageSender);
 			if (x.equalsIgnoreCase(messageSender)) {
 				filteredLoggedMessages.append(loggedMessage).append("\n");
             }
@@ -69,9 +68,8 @@ public class Log {
 		
 		for (String loggedMessage : loggedMessagesArray) {
 			//split message by comma and extract date
-			String[] parts = loggedMessage.split(",");
+			String[] parts = loggedMessage.split("\\)");
 			String dateString = parts[1].trim().split(",")[0];
-			//System.out.println(dateString);
 			if (x.equalsIgnoreCase(dateString)) {
 				filteredLoggedMessages.append(loggedMessage).append("\n");
 			}
@@ -80,18 +78,16 @@ public class Log {
 	}
 	
 	//method that writes a message(with info) to log text file.
-	//I decided to call date of when a message is logged instead of created. Can be changed later
 	public void addMessageToFile(Message message) {
 		//get date and time
 		Date messageDate = message.getMessageDate();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM.dd.yy,HH:mm");
 		String formattedDate = dateFormat.format(messageDate);
 		//format the string to be logged
-		String messageToLog = message.getMessageSender() + "," +  message.getMessageSenderUID() + "," + 
+		String messageToLog = message.getMessageSender() + "," +  message.getMessageSenderUID() + "(" + message.getReceiverUID() + ")" +
 		 formattedDate + "," + message.getMessageString();
 		//write to file on a new line
-		//THIS IS WHERE THE FILE NAME SHOULD BE CHANGED
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter("commlogs.txt", true))){
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter("commsLogs", true))){
 			writer.write(messageToLog);
 			writer.newLine();
 			writer.close();
@@ -101,7 +97,7 @@ public class Log {
 		}
 	}
 	
-	
+
 //driver for testing, THIS SHOULD BE DELETED
 //	public static void main(String[] args) {
 //        Log log = new Log();
@@ -116,14 +112,16 @@ public class Log {
 //        System.out.println(filteredMessages);
 //      
 //        //test filterLogsByDate
-//        System.out.println("All messages from date 11.28.23:\n");
-//        String filteredDates = log.filterLogsByDate("12.1.23");
+//        System.out.println("All messages from date 12.03.23:\n");
+//        String filteredDates = log.filterLogsByDate("12.03.23");
 //        System.out.println(filteredDates);
 //        
 //        //create message object
-//       // Message sampleMessage = new Message("Hello, how are you?", "Alice", "Bob", MessageType.TEXT, 1001, 1002);
-//        //call the addMessageFunction
-//      //  log.addMessageToFile(sampleMessage);
+//        ArrayList<Integer> receivers = new ArrayList<Integer>();
+//        receivers.add(1002);
+//        receivers.add(1030);
+//        Message sampleMessage = new Message("Hello, how are you?", "Alice", MessageType.TEXT, 1024, receivers);
+//        log.addMessageToFile(sampleMessage);
 //        System.out.println(log.getAllLogs());
 //    }
 

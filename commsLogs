@@ -1,3 +1,6 @@
-JOE(KYSON,TREY)10.20.23,07:40,Good morning
-BUBBA(DEBRA)11.05.23,09:50,ALOHA
-JOE(BUBBA)11.05.23,08:50,Salutations
+Tommy,1001([1002])11.05.23,16:28,Hello
+Bob,1008([1001])11.05.23,09:50,ALOHA
+Tommy,1001([1001])12.03.23,16:28,Hello, how are you?
+Alice,1024([1002])12.03.23,16:42,Hello, how are you?
+Alice,1024([1002, 1030])12.03.23,16:45,Hello, how are you?
+jon,3([3, 4])12.03.23,17:16,hola
