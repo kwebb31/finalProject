@@ -92,6 +92,10 @@ public class CommunicationGUI implements CommunicationUserInterface {
     private void setDisplayPanels() throws ClassNotFoundException, IOException {
         // Create a new frame
         frame = new JFrame("Communication");
+        
+        frame.setSize(1200, 800);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
 
         // Creating a panel to display options with flow layout
         optionsPanel = new JPanel();
@@ -235,9 +239,7 @@ public class CommunicationGUI implements CommunicationUserInterface {
         // Setting the size of the frame as well as attaching the overallPanel to the
         // frame
         frame.getContentPane().add(overallPanel);
-        frame.setSize(1200, 800);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        
     }
 
     private void logout() throws ClassNotFoundException, IOException {
@@ -367,9 +369,8 @@ public class CommunicationGUI implements CommunicationUserInterface {
         JButton goBack = new JButton("Return to main Lobby");
         goBack.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	createGroupFrame.dispose();
-            	
                 try {
+                	createGroupFrame.dispose();
                     setDisplayPanels();
                 } catch (Exception e1) {
                     e1.printStackTrace();
