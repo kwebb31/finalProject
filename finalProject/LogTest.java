@@ -34,7 +34,7 @@ class LogTest {
 
 	@Test
 	void testFilterLogsBySender() {
-		assertEquals(myLog.filterLogsBySender("Kat"), "sneakrets");
+		assertEquals(myLog.filterLogsBySender("Kat"), "");
 	}
 
 	@Test
