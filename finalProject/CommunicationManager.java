@@ -35,23 +35,22 @@ public class CommunicationManager implements Runnable {
 			e.printStackTrace();
 		}
 */
-		thread.start();
+		//thread.start();	
 		CommunicationUserInterface CommInterface;
 		CommInterface = new CommunicationGUI(client);
 		CommInterface.processCommands();
-		
-		
 	}
 
 	@Override
 	// thread action
 	public synchronized  void run() {
 		while(true) {
+
 			if(client.isLoggedIn) {
 				System.out.println("before read Object");
 				try {
-					client.receiveMessage();
-				} catch (IOException e) {
+					client.handleMessages();
+				} catch (IOException | ClassNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}

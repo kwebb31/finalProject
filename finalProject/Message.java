@@ -13,8 +13,8 @@ public class Message implements Serializable{
 	Integer messageSenderUID;
 	ArrayList<Integer> messageReceiverUID = new ArrayList<Integer>();
 	Boolean isSent;
-	
 	MessageType messageType;
+	
 	public Message(String messageString, String messageSender, String messageReceiver, MessageType messageType) {
 		this.messageString = messageString;
 		this.messageSender = messageSender;

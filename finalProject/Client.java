@@ -24,7 +24,8 @@ public class Client {
 	private int loginAttempt = 0;
 	private Log log = new Log();
 	public ArrayList<Message> messages = new ArrayList<Message>();
-
+	public String directory = null;
+	public String participants = null;
 	// client constructor
 	public Client(){
 		try {
@@ -88,8 +89,22 @@ public class Client {
 			
 	}
 	
+	public void handleMessages() throws ClassNotFoundException, IOException {
+		
+		Message temp = (Message) objectInputStream.readObject();
+		if(temp.messageType.equals(MessageType.TEXT)) {
+			receiveMessage(temp);
+		}
+		else if(temp.messageType.equals(MessageType.DIRECTORY)) {
+			System.out.println("entering handleDirectory");
+			System.out.println(temp.messageString);
+			handleDirectory(temp.messageString);
+		}
+		
+		
+	}
 	// receive messages sent from the server
-	public void receiveMessage() throws IOException {
+	public void receiveMessage(Message msg) throws IOException {
 		Boolean executed = false;
 	    System.out.println("Hello from receive msg");
 	    try {
@@ -98,25 +113,25 @@ public class Client {
 	            return;
 	        }
 	        System.out.println("Before readObject");
+	        System.out.println(objectInputStream.readObject().getClass());
 	        
-	        Message temp = (Message) objectInputStream.readObject();
-			ArrayList<Integer> tempParticipants = temp.getReceiverUID();
-			tempParticipants.add(Integer.valueOf(temp.getMessageSenderUID()));
+			ArrayList<Integer> tempParticipants = msg.getReceiverUID();
+			tempParticipants.add(Integer.valueOf(msg.getMessageSenderUID()));
 			tempParticipants.sort(null);
 			for(int i = 0; i < user.userChatroomArray.size(); i++) {
 				if(user.userChatroomArray.get(i).participants.equals(tempParticipants)) {
-					user.userChatroomArray.get(i).msgs.add(temp);
+					user.userChatroomArray.get(i).msgs.add(msg);
 					executed = true;
 					break;
 				}
 			}
 			if(executed == false) {
 				user.userChatroomArray.add(new Chat(tempParticipants));
-				user.userChatroomArray.get(user.userChatroomArray.size()-1).msgs.add(temp);
+				user.userChatroomArray.get(user.userChatroomArray.size()-1).msgs.add(msg);
 			}
 	        
 	        System.out.println("After readObject");
-	        System.out.println(temp.toString());
+	        System.out.println(msg.toString());
 	        System.out.println("after tostring");
 	        
 	    } catch (Exception e) {
@@ -137,12 +152,13 @@ public class Client {
 			return null;
 	}
 	
-	public String getParticipantsName(int userID, ArrayList<Integer> participants) throws IOException, ClassNotFoundException {
+	public void getParticipantsName(int userID, ArrayList<Integer> participants) throws IOException, ClassNotFoundException {
 		Message temp = new Message("", "" , MessageType.GET_NAMES, userID, participants);
-		objectOutputStream.writeObject(temp);
-		
-		Message returnMessage = (Message) objectInputStream.readObject();
-		return returnMessage.messageString;
+		objectOutputStream.writeObject(temp);	
+	}
+	public void handleParticipants(String participants) {
+		this.participants = participants;
+		System.out.println(participants);
 	}
 
 	// return the logs depending on what user decides
@@ -163,6 +179,7 @@ public class Client {
 		System.out.println("logging out..");
 		Message Temp = new Message("",user.userName,"Server",MessageType.LOGOUT);
 		objectOutputStream.writeObject(Temp);
+		objectOutputStream.reset();
 		System.out.println("message to server sent");	
 		isLoggedIn = false;
 		loginAttempt = 0;
@@ -172,11 +189,17 @@ public class Client {
 	}
 	
 	// receive the info of users for GUI use
-	public String getUserDirectory() throws IOException, ClassNotFoundException {
-		System.out.println("login request sending");
-		Message userDirectory =  new Message(user.getUserName(), user.getUserName(), "Server",MessageType.DIRECTORY);
-		objectOutputStream.writeObject(userDirectory);
-		userDirectory = (Message) objectInputStream.readObject();
-		return userDirectory.getMessageString();
+	public void getUserDirectory(Message msg) throws IOException, ClassNotFoundException {
+		System.out.println("directory request sending"); 
+		objectOutputStream.writeObject(msg);
+		objectOutputStream.reset();	
 	}
+	
+	public void handleDirectory(String directory) {
+		this.directory = directory;
+		System.out.println(directory);
+	}
+
+
+
 }
