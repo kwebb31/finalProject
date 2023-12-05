@@ -16,8 +16,8 @@ public class Client {
 	protected User user = new User();
 	public boolean isLoggedIn;
 	private boolean isConnected;
-	private String host = "localhost";
-	private int port = 1234;
+	String host = "localhost";
+	int port = 1234;
 	private Socket s;
 	private ObjectOutputStream objectOutputStream;
 	private ObjectInputStream objectInputStream;

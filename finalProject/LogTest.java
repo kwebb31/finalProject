@@ -13,7 +13,7 @@ class LogTest {
 	Message myMessage = new Message("Sneakret","Kat", "Tommy", MessageType.TEXT );
 	Message aMessage = new Message("Another Sneakret", "Tommy", "Kat", MessageType.TEXT);
 	ArrayList<String> myArrayList = new ArrayList();
-	Log myLog = new Log(myArrayList);
+	Log myLog = new Log();
 	User myUser = new User("Kat", Role.IT, "myPassword", true, true );
 	
 	@BeforeClass

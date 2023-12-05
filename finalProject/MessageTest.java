@@ -73,8 +73,9 @@ class MessageTest {
 
 	@Test
 	void testToString() {
-		//listen... I can't get the exact time the test will run right, so my tostring won't ever match. 
+		//I can't get the exact time the test will run right, so my tostring won't ever match. 
 		assertNotEquals("1,Kat,This is my message,TEXT,Fri Dec 01 03:13:26 PST 2023,[]", myMessage.toString());
+		
 	}
 
 }
