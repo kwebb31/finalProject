@@ -21,15 +21,15 @@ public class CommunicationManager implements Runnable {
   	/*
 		try {
 			ArrayList<Integer> test = new ArrayList<Integer>();
-			test.add(1);
-			client.login("tommy", "password1");
+			test.add(5);
+			client.login("tommy2", "password5");
+			//thread.start();
 			
-			
-			client.sendMessage("Hello", "tommy", "tommy", "1", test);
+			//client.sendMessage("Hello", "tommy", "tommy2", "5", test);
 			//client.receiveMessage();
 			//client.sendMessage("Hey", "tommy", "tommy", "1", test);
 			//client.receiveMessage();
-			System.out.println("after sending message");
+			//System.out.println("after sending message");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

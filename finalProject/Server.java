@@ -62,12 +62,12 @@ public class Server {
 	}
 	
 	//ClientHandler class
-	private static class ClientHandler implements Runnable{
+	 static class ClientHandler implements Runnable{
 		//public static ArrayList<User> users2 = users;
 		public static ArrayList<Message> asyncMessages  = new ArrayList<Message>();
 		public static ArrayList<Chat> chats = new ArrayList<Chat>();
 	    // the user using this client
-	 	private User current = new User();
+	 	public User current = new User();
 		// set the input and outputs
 		public  ObjectOutputStream objectOutputStream;
 		public  ObjectInputStream objectInputStream;
@@ -155,16 +155,17 @@ public class Server {
 		    // check each client that is active
 		    for (ClientHandler client : clients) {
 		    	// if the user id matches the receiver, send out the message and log it
+		    	
 		    	for(int s : message.messageReceiverUID){
 		    		if(client.current.id == s) {
 				        	 recipientFound = true;
-				        	 try {	            
-				        		 os.writeObject(message);
+				        	 try {	
+				        		 client.objectOutputStream.writeObject(message);
 				        		 System.out.println("message sent?");
-				        		 os.flush();
-				        		 os.reset();
+				        		 client.objectOutputStream.flush();
+				        		 client.objectOutputStream.reset();
 				        		 log.addMessageToFile(message);
-				        		 break;
+				        		 //break;
 				        	 	}catch (StreamCorruptedException e) {
 				        	 		// Print the stack trace for debugging
 				        	 		e.printStackTrace();
@@ -237,7 +238,7 @@ public class Server {
 		}
 
 		// check to send messages to users that have logged in.
-		void sendAsynchronousMessage() throws IOException {
+		 void sendAsynchronousMessage() throws IOException {
 		    System.out.println("Sending the Async Messages to user");
 		    if (asyncMessages.size() > 0) {
 		        ArrayList<Message> messagesToSend = new ArrayList<>();
