@@ -143,13 +143,16 @@ public class Client {
 	public void receiveMessage(Message msg) throws IOException {
 		Boolean executed = false;
 	    System.out.println("Hello from receive msg");
+	    System.out.println("in front of msg to string");
+	    System.out.println(msg.toString());
+	    
 	    try {
 	        if (objectInputStream == null) {
 	            System.out.println("ObjectInputStream is null. Check your initialization.");
 	            return;
 	        }
 	        System.out.println("Before readObject");
-	        System.out.println(objectInputStream.readObject().getClass());
+	        //System.out.println(objectInputStream.readObject().getClass());
 	        
 			ArrayList<Integer> tempParticipants = msg.getReceiverUID();
 			tempParticipants.add(Integer.valueOf(msg.getMessageSenderUID()));
@@ -167,6 +170,7 @@ public class Client {
 				}
 			}
 			if(executed == false) {
+				System.out.println("executed is false");
 				user.userChatroomArray.add(new Chat(tempParticipants));
 				user.userChatroomArray.get(user.userChatroomArray.size()-1).msgs.add(msg);
 				//gets the Chatroom ID for the current Chatroom and sends it to the message

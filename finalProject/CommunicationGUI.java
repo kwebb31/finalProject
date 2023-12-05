@@ -17,6 +17,8 @@ import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 public class CommunicationGUI implements CommunicationUserInterface {
 
@@ -327,6 +329,19 @@ public class CommunicationGUI implements CommunicationUserInterface {
 
     private void viewLogs() {
         JFrame viewLogsFrame = new JFrame();
+        
+        viewLogsFrame.setLayout(new GridLayout());   
+        JPanel logPanel = new JPanel();
+        logPanel.setPreferredSize(new Dimension(600, 600));
+        JTextArea logs = new JTextArea(25,40);       
+        logs.append(client.viewLog("all"));
+        logPanel.add(new JScrollPane(logs, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
+        
+        viewLogsFrame.add(logPanel);
+        
+        viewLogsFrame.setSize(600, 600);
+        viewLogsFrame.setLocationRelativeTo(null);
+        viewLogsFrame.setVisible(true);
     }
 
     private void createGroup() throws ClassNotFoundException, IOException, InterruptedException {
