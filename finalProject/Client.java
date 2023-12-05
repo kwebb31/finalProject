@@ -24,8 +24,8 @@ public class Client {
 	private int loginAttempt = 0;
 	private Log log = new Log();
 	public ArrayList<Message> messages = new ArrayList<Message>();
-	public String directory = null;
-	public String participants = null;
+	public volatile String directory = null;
+	public volatile String participants = null;
 	// client constructor
 	public Client(){
 		try {
@@ -99,6 +99,11 @@ public class Client {
 			System.out.println("entering handleDirectory");
 			System.out.println(temp.messageString);
 			handleDirectory(temp.messageString);
+		}
+		else if(temp.messageType.equals(MessageType.GET_NAMES)) {
+			System.out.println("entering handleDirectory");
+			System.out.println(temp.messageString);
+			handleParticipants(temp.messageString);
 		}
 		
 		
@@ -196,6 +201,7 @@ public class Client {
 	}
 	
 	public void handleDirectory(String directory) {
+		System.out.println("inside handle directory");
 		this.directory = directory;
 		System.out.println(directory);
 	}

@@ -281,9 +281,6 @@ public class Server {
 			objectOutputStream.writeObject(userDirectoryListMessage);
 		}
 		
-		void getUserChats() {
-			
-		}
 		
 		private void getParticipantsNames(Message temp) throws IOException {
 			String names = "";

@@ -32,6 +32,7 @@ public class CommunicationGUI implements CommunicationUserInterface {
     private JButton sendNewMessage;
     private JButton viewLogs;
     private JButton sendMessage;
+    private JButton refresh;
     private JFrame directoryFrame;
     private int counter;
     private JList jlistUsers;
@@ -103,19 +104,7 @@ public class CommunicationGUI implements CommunicationUserInterface {
         sendNewMessage = new JButton("Create a new chat");
         createGroup = new JButton("Create a group");
         viewLogs = new JButton("View Logs");
-
-        JButton refresh = new JButton("Refresh");
-
-        refresh.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-            	frame.dispose();
-                try {
-                    setDisplayPanels();
-                } catch (ClassNotFoundException | IOException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        });
+        refresh = new JButton("Refresh");
 
         frame.getRootPane().setDefaultButton(logout);
 
@@ -145,9 +134,10 @@ public class CommunicationGUI implements CommunicationUserInterface {
             public void actionPerformed(ActionEvent e) {
                 try {
                 	System.out.println("before show directory");
-                    showDirectory();
+                    frame.dispose();
+                	showDirectory();
                     System.out.println("after show directory");
-                } catch (ClassNotFoundException | IOException | InterruptedException e1) {
+                } catch (Exception e1) {
                     e1.printStackTrace();
                 }
             }
@@ -155,9 +145,11 @@ public class CommunicationGUI implements CommunicationUserInterface {
 
         createGroup.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+            	
                 try {
+                	frame.dispose();
                     createGroup();
-                } catch (ClassNotFoundException | IOException | InterruptedException e1) {
+                } catch (Exception e1) {
                     e1.printStackTrace();
                 }
             }
@@ -166,6 +158,18 @@ public class CommunicationGUI implements CommunicationUserInterface {
         viewLogs.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 viewLogs();
+            }
+        });
+        
+        refresh.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	
+                try {
+                	frame.dispose();
+                    setDisplayPanels();
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
             }
         });
 
@@ -187,10 +191,15 @@ public class CommunicationGUI implements CommunicationUserInterface {
         chats = new DefaultListModel();
 
         userChatroomArray = client.getAllChatRooms();
-
+        System.out.println("before looping through all chatrooms");
         for (int i = 0; i < userChatroomArray.size(); i++) {
-        	Message temp = new Message("", "" , MessageType.GET_NAMES, client.user.id, userChatroomArray.get(i).participants);
-        	chats.addElement();
+        	
+        	client.getParticipantsName(client.user.id, userChatroomArray.get(i).participants);
+        	while(client.participants == null) {
+        		;
+        	}
+        	chats.addElement(client.participants);
+        	client.participants = null;
         }
 
         // Creating a jlist to which our list is passed
@@ -232,10 +241,11 @@ public class CommunicationGUI implements CommunicationUserInterface {
     }
 
     private void logout() throws ClassNotFoundException, IOException {
-        JFrame logoutFrame = new JFrame();
-        client.logout();
-        logoutFrame.dispose();
-        frame.dispose();
+        //JFrame logoutFrame = new JFrame();
+    	frame.dispose();
+    	client.logout();
+        //logoutFrame.dispose();
+        
     }
 
     private void showDirectoryPanel() throws ClassNotFoundException, IOException, InterruptedException {
@@ -310,6 +320,7 @@ public class CommunicationGUI implements CommunicationUserInterface {
         client.sendMessage(messageToBeSent, username, userDirectory[indexClicked],
                 client.user.getID().toString(), receiversID);
         receiversID.clear();
+        System.out.println("done sneding message from gui");
     }
 
     private void viewLogs() {
@@ -352,6 +363,21 @@ public class CommunicationGUI implements CommunicationUserInterface {
         });
 
         newOptionsPanel.add(sendMessage);
+        
+        JButton goBack = new JButton("Return to main Lobby");
+        goBack.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	createGroupFrame.dispose();
+            	
+                try {
+                    setDisplayPanels();
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        newOptionsPanel.add(goBack);
 
         DefaultListModel<String> selectedUserList = new DefaultListModel();
 
@@ -472,6 +498,22 @@ public class CommunicationGUI implements CommunicationUserInterface {
 		});
 //		sendMessage.setPreferredSize(new Dimension(20,20));
 		newOptionsPanel.add(sendMessage);
+		
+		JButton goBack = new JButton("Return to main lobby");		
+		goBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				directoryFrame.dispose();
+				try {
+					setDisplayPanels();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+//		sendMessage.setPreferredSize(new Dimension(20,20));
+		newOptionsPanel.add(goBack);
+		
 		System.out.println("the get user directory call");
 		Message tempMSG3 = new Message(client.user.getUserName(), client.user.getUserName(), "Server",MessageType.DIRECTORY);
 		client.getUserDirectory(tempMSG3);
@@ -480,6 +522,7 @@ public class CommunicationGUI implements CommunicationUserInterface {
 		}
 		String temp = client.directory;
 		client.directory = null;
+		System.out.println("directory inside GUI");
 		System.out.println(temp);
 		userDirectory = temp.split("\n");
 		System.out.println("after the directory call");
@@ -544,6 +587,21 @@ public class CommunicationGUI implements CommunicationUserInterface {
         });
 
         newOptionsPanel.add(sendMessage);
+        
+        JButton goBack = new JButton("Return to main lobby");
+
+        goBack.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	openChatFrame.dispose();
+                try {
+                    setDisplayPanels();
+                } catch (IOException | ClassNotFoundException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        newOptionsPanel.add(goBack);
 
         JButton refresh = new JButton("Refresh");
 
