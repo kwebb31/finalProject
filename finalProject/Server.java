@@ -279,6 +279,7 @@ public class Server {
 			
 			Message userDirectoryListMessage = new Message(userDirectories, "Server", "Client", MessageType.DIRECTORY);
 			objectOutputStream.writeObject(userDirectoryListMessage);
+			System.out.println("server says " + userDirectoryListMessage.getMessageString());
 		}
 		
 		void getUserChats() {

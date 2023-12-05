@@ -24,8 +24,8 @@ public class Client {
 	private int loginAttempt = 0;
 	private Log log = new Log();
 	public ArrayList<Message> messages = new ArrayList<Message>();
-	public String directory = null;
-	public String participants = null;
+	public volatile String directory = null;
+	public volatile String participants = null;
 	// client constructor
 	public Client(){
 		try {
@@ -100,6 +100,11 @@ public class Client {
 			System.out.println(temp.messageString);
 			handleDirectory(temp.messageString);
 		}
+		else if(temp.messageType.equals(MessageType.GET_NAMES)) {
+			System.out.println("entering handleDirectory");
+			System.out.println(temp.messageString);
+			handleParticipants(temp.messageString);
+		}
 		
 		
 	}
@@ -118,9 +123,14 @@ public class Client {
 			ArrayList<Integer> tempParticipants = msg.getReceiverUID();
 			tempParticipants.add(Integer.valueOf(msg.getMessageSenderUID()));
 			tempParticipants.sort(null);
+			
+			
 			for(int i = 0; i < user.userChatroomArray.size(); i++) {
 				if(user.userChatroomArray.get(i).participants.equals(tempParticipants)) {
 					user.userChatroomArray.get(i).msgs.add(msg);
+					//gets the Chatroom ID for the current Chatroom and sends it to the message
+					//so the message can use it as an attribute
+					msg.setChatID(user.userChatroomArray.get(i).getID());
 					executed = true;
 					break;
 				}
@@ -128,6 +138,9 @@ public class Client {
 			if(executed == false) {
 				user.userChatroomArray.add(new Chat(tempParticipants));
 				user.userChatroomArray.get(user.userChatroomArray.size()-1).msgs.add(msg);
+				//gets the Chatroom ID for the current Chatroom and sends it to the message
+				//so the message can use it as an attribute
+				msg.setChatID(user.userChatroomArray.get(user.userChatroomArray.size()-1).getID());
 			}
 	        
 	        System.out.println("After readObject");
@@ -196,6 +209,7 @@ public class Client {
 	}
 	
 	public void handleDirectory(String directory) {
+		System.out.println("inside handle directory");
 		this.directory = directory;
 		System.out.println(directory);
 	}

@@ -51,7 +51,9 @@ public class Chat {
 	private void SetID() {
 		this.chatRoomID = chatRoomCounter++; 
 	}
-
+	Integer getID() {
+		return chatRoomID;
+	}
 	ArrayList<Integer> getParticipantsUID(){
 
 		return participants;

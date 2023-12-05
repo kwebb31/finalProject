@@ -42,8 +42,8 @@ public class CommunicationManager implements Runnable {
 	}
 
 	@Override
-	// thread action
-	public synchronized  void run() {
+	// thread action 
+	public synchronized void run() {
 		while(true) {
 
 			if(client.isLoggedIn) {
