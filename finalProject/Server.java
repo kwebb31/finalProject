@@ -108,6 +108,9 @@ public class Server {
 					 else if(temp.getMessageType().equals(MessageType.GET_NAMES)) {
 						 getParticipantsNames(temp);
 					 }
+					 else if(temp.getMessageType().equals(MessageType.CHATROOM_CREATED)) {
+						 handleChatroomCreation(temp);
+					 }
 					 
 				 }
 			 } catch(IOException e) {	 
@@ -176,6 +179,28 @@ public class Server {
 		    	offlineMessage(message);
 		    }
 		    }
+		private void handleChatroomCreation(Message message) {
+	        // Extract chatroom ID and participants from the message
+	        int chatRoomID = message.getChatID();
+	        ArrayList<Integer> participants = message.getReceiverUID();
+
+	        // Notify all clients in the chatroom about its creation
+	        notifyClientsAboutChatroom(chatRoomID, participants);
+	    }
+
+	    private void notifyClientsAboutChatroom(int chatRoomID, ArrayList<Integer> participants) {
+	        // Notify all clients in the chatroom about its creation
+	        for (ClientHandler client : clients) {
+	            if (participants.contains(client.current.id)) {
+	                try {
+	                    client.objectOutputStream.writeObject(new Message("","Client", MessageType.CHATROOM_CREATED,chatRoomID, participants));
+	                    client.objectOutputStream.flush();
+	                } catch (IOException e) {
+	                    e.printStackTrace();
+	                }
+	            }
+	        }
+	    }
 		
 		// add the message to an arraylist that will be held by server until users are online
 		void offlineMessage(Message message) throws IOException{
@@ -188,6 +213,9 @@ public class Server {
 			writer.close();
 			w.close();
 			System.out.println("done storing async message");
+	        if (message.getMessageType().equals(MessageType.CHATROOM_CREATED)) {
+	            handleChatroomCreation(message);
+	        }
 		}
 		
 		// load the messages from file to arraylist on server start
@@ -210,39 +238,51 @@ public class Server {
 
 		// check to send messages to users that have logged in.
 		void sendAsynchronousMessage() throws IOException {
-			System.out.println("Sending the Async Messages to user");
-		if(asyncMessages.size() > 0) {
-			// store all messages to the temp ArrayList and when all messages are sent, remove them from
-			// the async messages
-			ArrayList<Message> msgToRemove = new ArrayList<Message>();
-			for(Message msg : asyncMessages) {
-				for(int s : msg.messageReceiverUID) {
-					if(s == current.id && current.userIsOnline == true) {
-						log.addMessageToFile(msg);
-						objectOutputStream.writeObject(msg);
-						objectOutputStream.flush();
-						if(s == current.id) {
-							msgToRemove.add(msg);
-						}
-					}
-				}
-			}
-			asyncMessages.removeAll(msgToRemove);
-		}
-		// update the file of async messages
-			try {
-				FileOutputStream writer = new FileOutputStream(new File("asyncMessages.txt"));
-				ObjectOutputStream w = new ObjectOutputStream(writer); 
-				for(Message msg : asyncMessages) {		
-					w.writeObject(msg);
-				}
-				writer.close();
-				w.close();
-				System.out.println("done sending async");
-			}catch(EOFException e) {
-				
-			}
+		    System.out.println("Sending the Async Messages to user");
+		    if (asyncMessages.size() > 0) {
+		        ArrayList<Message> messagesToSend = new ArrayList<>();
 
+		        // Identify messages for the current user
+		        for (Message msg : asyncMessages) {
+		            for (int s : msg.messageReceiverUID) {
+		                if (s == current.id && current.userIsOnline) {
+		                    log.addMessageToFile(msg);
+		                    messagesToSend.add(msg);
+		                }
+		            }
+		        }
+
+		        // Send the identified messages to the user
+		        if (!messagesToSend.isEmpty()) {
+		        	for(Message msg : messagesToSend) {
+			            objectOutputStream.writeObject(msg);
+			            objectOutputStream.flush();
+		        	}
+
+		        }
+
+		        // Remove sent messages from asyncMessages
+		        asyncMessages.removeAll(messagesToSend);
+		    }
+
+		    // Update the file of async messages
+		    updateAsyncMessagesFile();
+		}
+
+		// Update the file of async messages
+		void updateAsyncMessagesFile() throws IOException {
+		    try {
+		        FileOutputStream writer = new FileOutputStream(new File("asyncMessages.txt"));
+		        ObjectOutputStream w = new ObjectOutputStream(writer);
+		        for (Message msg : asyncMessages) {
+		            w.writeObject(msg);
+		        }
+		        writer.close();
+		        w.close();
+		        System.out.println("Done updating async messages file");
+		    } catch (EOFException e) {
+		        // Handle the exception as needed
+		    }
 		}
 		
 		// logout method, receives a message object with MessageType logout and then signs the user out and clears the instance of user in this client

@@ -68,25 +68,56 @@ public class Client {
 	
 	// send a message to the server to send to designated client
 	public void sendMessage(String msg, String sender, String receiver, String senderUID, ArrayList<Integer> receiverUID ) throws IOException {
-			Boolean executed = false;
-			Message temp = new Message(msg, sender, MessageType.TEXT, Integer.parseInt(senderUID) ,receiverUID);
-			ArrayList<Integer> tempParticipants = receiverUID;
-			tempParticipants.add(Integer.valueOf(senderUID));
-			tempParticipants.sort(null);
-			for(int i = 0; i < user.userChatroomArray.size(); i++) {
-				if(user.userChatroomArray.get(i).participants.equals(tempParticipants)) {
-					user.userChatroomArray.get(i).msgs.add(temp);
-					executed = true;
-					break;
-				}
-			}
-			if(executed == false) {
-				user.userChatroomArray.add(new Chat(tempParticipants));
-				user.userChatroomArray.get(user.userChatroomArray.size()-1).msgs.add(temp);
-			}
-			objectOutputStream.writeObject(temp);
-			objectOutputStream.flush();
+	    Boolean executed = false;
+	    Message temp = new Message(msg, sender, MessageType.TEXT, Integer.parseInt(senderUID), receiverUID);
+	    
+	    // Create a chatroom ID based on participants
+	    ArrayList<Integer> tempParticipants = new ArrayList<>(receiverUID);
+	    tempParticipants.add(Integer.valueOf(senderUID));
+	    tempParticipants.sort(null);
+	    int chatRoomID = getChatroomID(tempParticipants);
+
+	    // Notify the server about the chatroom
+	    notifyServerAboutChatroom(chatRoomID, tempParticipants);
+
+	    // Update the client's chatroom list
+	    updateClientChatrooms(chatRoomID, temp);
+
+	    // Send the message to the server
+	    objectOutputStream.writeObject(temp);
+	    objectOutputStream.flush();
 			
+	}
+	
+	private int getChatroomID(ArrayList<Integer> participants) {
+	    // Use a hash function or any unique method to generate a chatroom ID based on participants
+	    // This ensures that the same group of participants always generates the same chatroom ID
+	    // For simplicity, you can concatenate participant IDs and take the hash code
+	    String concatenatedParticipants = String.join(",", participants.stream().map(String::valueOf).toArray(String[]::new));
+	    return concatenatedParticipants.hashCode();
+	}
+	private void notifyServerAboutChatroom(int chatRoomID, ArrayList<Integer> participants) throws IOException {
+	    // Notify the server about the new chatroom
+	    // You may need to define a protocol for this communication
+	    // For example, send a special message to the server
+	    // with messageType = CHATROOM_CREATED and relevant information
+	    Message chatroomCreatedMessage = new Message("", "Server", MessageType.CHATROOM_CREATED, chatRoomID, participants);
+	    objectOutputStream.writeObject(chatroomCreatedMessage);
+	    objectOutputStream.flush();
+	}
+	private void updateClientChatrooms(int chatRoomID, Message message) {
+	    // Update the client's chatroom list
+	    // Check if the chatroom already exists
+	    for (Chat chat : user.userChatroomArray) {
+	        if (chat.chatRoomID == chatRoomID) {
+	            chat.msgs.add(message);
+	            return;
+	        }
+	    }
+	    // If the chatroom doesn't exist, create a new one
+	    Chat newChat = new Chat(new ArrayList<>(message.getReceiverUID()));
+	    newChat.msgs.add(message);
+	    user.userChatroomArray.add(newChat);
 	}
 	
 	public void handleMessages() throws ClassNotFoundException, IOException {

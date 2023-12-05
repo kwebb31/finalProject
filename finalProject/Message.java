@@ -26,6 +26,7 @@ public class Message implements Serializable{
 		this.messageString = messageString;
 		this.messageSender = messageSender;
 		SetID();
+		chatRoomID = senderUID;
 		this.messageType = messageType;
 		messageSenderUID = senderUID;
 		messageReceiverUID = receiverUID;
@@ -34,6 +35,9 @@ public class Message implements Serializable{
 	
 	void setChatID(Integer chatRoomID) {
 		this.chatRoomID = chatRoomID;
+	}
+	public int getChatID() {
+		return chatRoomID;
 	}
 	
 	private void SetID() {

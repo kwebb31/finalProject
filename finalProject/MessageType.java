@@ -6,5 +6,6 @@ public enum MessageType {
 	TEXT,
 	DIRECTORY,
 	CREATE_CHAT,
+	CHATROOM_CREATED,
 	GET_NAMES;
 }
