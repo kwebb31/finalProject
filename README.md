@@ -28,6 +28,8 @@ Welcome to the repository for CS 401 Communications Group 7! This project focuse
    8.[FINAL MEETING MINUTES](https://github.com/kwebb31/finalProject/blob/main/Meeting%20Minutes%20Group%207_%20Communcations%20(2).pdf)
 
    9.[FINAL GantChart](https://github.com/kwebb31/finalProject/blob/main/g7CommunicationsGanttChartfinal-combined.pdf)
+
+   10.[FINAL API document](https://github.com/kwebb31/finalProject/blob/main/GROUP%207%20API%20Specification%20Documentation.pdf)
    
 <ins>**Documents**</ins>
 
