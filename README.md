@@ -25,6 +25,7 @@ Welcome to the repository for CS 401 Communications Group 7! This project focuse
   
   7.[Updated Gantt Chart](https://github.com/kwebb31/CS401Group7/blob/main/Picture1-combined.pdf)
 
+   8.[FINAL MEETING MINUTES]([https://github.com/kwebb31/CS401Group7/blob/main/Picture1-combined.pdf](https://github.com/kwebb31/finalProject/blob/main/Meeting%20Minutes%20Group%207_%20Communcations%20(2).pdf))
 <ins>**Documents**</ins>
 
 
